@@ -8,6 +8,7 @@ import lombok.Setter;
 public class KobisBoxOfficeResponseDto {
     private String movieCd;
     private String movieNm;
+    private String openDt;
     private String rank;
     private String rankInten;
     private String rankOldAndNew;

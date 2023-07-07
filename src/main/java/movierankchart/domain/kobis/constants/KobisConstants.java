@@ -4,7 +4,8 @@ public class KobisConstants {
     public static final long DAILY_API_CALLS = 28;
     public static final long WEEKLY_API_CALLS = 4;
 
-    public static final char SHOW_RANGE_DATE_DELIMITER = '~';
+    public static final String SHOW_RANGE_DELIMITER = "~";
+    public static final String OPEN_DT_DELIMITER = "-";
 
     public static final String RANK_OLD = "OLD";
     public static final String RANK_NEW = "NEW";
