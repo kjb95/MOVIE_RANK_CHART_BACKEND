@@ -1,8 +1,8 @@
 package movierankchart.domain.kobis.constants;
 
 public class KobisConstants {
-    public static final long DAILY_API_CALLS = 28;
-    public static final long WEEKLY_API_CALLS = 4;
+    public static final long DAILY_API_CALLS = 7;
+    public static final long WEEKLY_API_CALLS = 1;
 
     public static final String SHOW_RANGE_DELIMITER = "~";
     public static final String OPEN_DT_DELIMITER = "-";

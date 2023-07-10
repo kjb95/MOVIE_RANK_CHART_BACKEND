@@ -16,7 +16,7 @@ public class ChatLog extends AuditEntity {
     @Id
     @GeneratedValue
     private Long chatLogId;
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movies_id")
     private Movies movies;
     @ManyToOne(optional = false)

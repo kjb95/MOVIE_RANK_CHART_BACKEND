@@ -15,7 +15,7 @@ public class Users extends AuditEntity {
     @Id
     @GeneratedValue
     private Long usersId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movies_id")
     private Movies movies;
     @Column(nullable = false)

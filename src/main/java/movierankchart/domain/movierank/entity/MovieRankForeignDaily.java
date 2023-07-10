@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class MovieRankForeignDaily extends AuditEntity {
     @EmbeddedId
     private MovieRankId movieRankForeignDailyId;
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movies_id")
     private Movies movies;
     @Embedded

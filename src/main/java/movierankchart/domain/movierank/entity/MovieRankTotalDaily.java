@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public class MovieRankTotalDaily extends AuditEntity {
     @EmbeddedId
     private MovieRankId movieRankTotalDailyId;
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movies_id")
     private Movies movies;
     @Embedded
