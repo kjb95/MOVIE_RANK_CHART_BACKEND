@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieRankTotalDaily extends AuditEntity {
     @EmbeddedId

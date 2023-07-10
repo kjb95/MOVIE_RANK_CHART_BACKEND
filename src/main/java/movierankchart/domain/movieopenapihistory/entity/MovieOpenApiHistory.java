@@ -1,6 +1,6 @@
 package movierankchart.domain.movieopenapihistory.entity;
 
-import lombok.Getter;
+import lombok.*;
 import movierankchart.common.entity.AuditEntity;
 
 import javax.persistence.Column;
@@ -11,6 +11,9 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieOpenApiHistory extends AuditEntity {
     @Id
     @GeneratedValue

@@ -1,9 +1,6 @@
 package movierankchart.domain.movies.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import movierankchart.batch.constants.BatchConstants;
 import movierankchart.common.entity.AuditEntity;
 import movierankchart.common.utils.DateUtils;
@@ -17,11 +14,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Movies extends AuditEntity {
     @Id
     private Long moviesId;

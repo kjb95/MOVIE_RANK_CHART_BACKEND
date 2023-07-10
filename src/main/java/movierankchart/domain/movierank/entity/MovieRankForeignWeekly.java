@@ -1,6 +1,6 @@
 package movierankchart.domain.movierank.entity;
 
-import lombok.Getter;
+import lombok.*;
 import movierankchart.common.entity.AuditEntity;
 import movierankchart.domain.movies.entity.Movies;
 
@@ -9,6 +9,9 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieRankForeignWeekly extends AuditEntity {
     @Id
     @GeneratedValue

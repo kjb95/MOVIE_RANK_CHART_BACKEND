@@ -1,6 +1,6 @@
 package movierankchart.domain.chatlog.entity;
 
-import lombok.Getter;
+import lombok.*;
 import movierankchart.common.entity.AuditEntity;
 import movierankchart.domain.movies.entity.Movies;
 import movierankchart.domain.users.entity.Users;
@@ -9,6 +9,9 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatLog extends AuditEntity {
     @Id
     @GeneratedValue
