@@ -1,5 +1,6 @@
 package movierankchart.domain.kmdb.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,9 @@ public class KmdbResultResponseDto {
     private String runtime;
     private String rating;
     private String genre;
-    private String repRlsDate;
+    private KmdbRatingsResponseDto ratings;
     private String posters;
+    @JsonProperty("Codes")
+    private KmdbCodesResponseDto Codes;
+    private String openDt;
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class KmdbDataResponseDto {
-    @JsonProperty("Result")
-    public List<KmdbResultResponseDto> Result;
+public class KmdbCodesResponseDto {
+    @JsonProperty("Code")
+    List<KmdbCodeResponseDto> Code;
 }

@@ -12,8 +12,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +21,6 @@ public class KobisService {
     private String KOBIS_API_KEY;
 
     private final WebClientService webClientService;
-
-    public List<KobisMovieRankResponseDto> findMovieRank(List<LocalDate> dates, String repNationCd, String apiPath) {
-        return dates.stream()
-                .map(date -> findMovieRank(date, repNationCd, apiPath))
-                .collect(Collectors.toList());
-    }
 
     public KobisMovieRankResponseDto findMovieRank(LocalDate date, String repNationCd, String apiPath) {
         MultiValueMap<String, String> params = createParams(date, repNationCd, apiPath);

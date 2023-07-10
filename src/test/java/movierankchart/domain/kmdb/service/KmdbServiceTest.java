@@ -1,7 +1,7 @@
 package movierankchart.domain.kmdb.service;
 
 import movierankchart.common.service.WebClientService;
-import movierankchart.domain.kmdb.dto.KmdbMovieDetailResponseDto;
+import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -28,18 +28,12 @@ class KmdbServiceTest {
     @Test
     void KMDB_OPEN_API_영화상세정보_호출_성공() {
         // given
-        String openDt = "2017-12-27";
-        String title = "1987";
+        String title = "귀공자";
 
         // when
-        KmdbMovieDetailResponseDto movieDetail = kmdbService.findMovieDetail(openDt, title);
+        KmdbResultResponseDto movieDetail = kmdbService.findMovieDetail(title, "", "");
 
         // then
-        int dataSize = movieDetail.getData()
-                .get(0)
-                .getResult()
-                .size();
-        Assertions.assertThat(dataSize)
-                .isGreaterThanOrEqualTo(1);
+        Assertions.assertThat(movieDetail.getMovieSeq()).isNotNull();
     }
 }
