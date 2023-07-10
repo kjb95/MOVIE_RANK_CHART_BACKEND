@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieRankTotalDaily extends AuditEntity {
     @EmbeddedId
-    private MovieRankId movieRankId;
+    private MovieRankId movieRankTotalDailyId;
     @ManyToOne(optional = false)
     @JoinColumn(name = "movies_id")
     private Movies movies;
@@ -33,7 +33,7 @@ public class MovieRankTotalDaily extends AuditEntity {
         Movies movies = Movies.fromDto(kmdbResultResponseDto);
         MovieRank movieRank = MovieRank.fromDto(kobisBoxOfficeResponseDto);
         return MovieRankTotalDaily.builder()
-                .movieRankId(movieRankId)
+                .movieRankTotalDailyId(movieRankId)
                 .movies(movies)
                 .movieRank(movieRank)
                 .build();
