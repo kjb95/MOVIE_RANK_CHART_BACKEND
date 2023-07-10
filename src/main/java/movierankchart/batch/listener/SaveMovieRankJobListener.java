@@ -2,7 +2,7 @@ package movierankchart.batch.listener;
 
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchConstants;
-import movierankchart.common.error.ErrorCode;
+import movierankchart.common.exception.ErrorCode;
 import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import org.springframework.batch.core.JobExecution;

@@ -1,4 +1,4 @@
-package movierankchart.common.error;
+package movierankchart.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package movierankchart.domain.kmdb.service;
 
 import lombok.RequiredArgsConstructor;
-import movierankchart.common.error.ErrorCode;
+import movierankchart.common.exception.ErrorCode;
 import movierankchart.common.service.WebClientService;
 import movierankchart.domain.kmdb.constants.KmdbConstants;
 import movierankchart.domain.kmdb.dto.KmdbMovieDetailResponseDto;
