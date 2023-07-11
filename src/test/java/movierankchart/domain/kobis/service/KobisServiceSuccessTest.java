@@ -18,7 +18,7 @@ import java.time.LocalDate;
  *  코드 추가
  */
 @Disabled
-class KobisServiceTest {
+class KobisServiceSuccessTest {
     private KobisService kobisService;
     private WebClientService webClientService;
 

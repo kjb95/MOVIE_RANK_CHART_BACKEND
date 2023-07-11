@@ -2,6 +2,7 @@ package movierankchart.domain.kobis.service;
 
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchConstants;
+import movierankchart.common.exception.ErrorCode;
 import movierankchart.common.service.WebClientService;
 import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.kobis.constants.KobisConstants;
@@ -24,7 +25,11 @@ public class KobisService {
 
     public KobisMovieRankResponseDto findMovieRank(LocalDate date, String repNationCd, String apiPath) {
         MultiValueMap<String, String> params = createParams(date, repNationCd, apiPath);
-        return webClientService.get(KobisConstants.BASE_URL, apiPath, params, KobisMovieRankResponseDto.class);
+        KobisMovieRankResponseDto kobisMovieRankResponseDto = webClientService.get(KobisConstants.BASE_URL, apiPath, params, KobisMovieRankResponseDto.class);
+        if (kobisMovieRankResponseDto.getBoxOfficeResult() == null) {
+            throw new IllegalStateException(ErrorCode.KOBIS_CALL_FAIL.getMessage());
+        }
+        return kobisMovieRankResponseDto;
     }
 
     private MultiValueMap<String, String> createParams(LocalDate date, String repNationCd, String apiPath) {

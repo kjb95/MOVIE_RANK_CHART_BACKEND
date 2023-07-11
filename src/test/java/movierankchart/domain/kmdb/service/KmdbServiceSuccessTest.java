@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  *  코드 추가
  */
 @Disabled
-class KmdbServiceTest {
+class KmdbServiceSuccessTest {
     private KmdbService kmdbService;
     private WebClientService webClientService;
 

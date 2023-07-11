@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class WebClientService {
-    public WebClient createWebClient(String baseUrl) {
+    private WebClient createWebClient(String baseUrl) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .build();
@@ -22,6 +22,7 @@ public class WebClientService {
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
+                .doOnError(RuntimeException::new)
                 .block();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
