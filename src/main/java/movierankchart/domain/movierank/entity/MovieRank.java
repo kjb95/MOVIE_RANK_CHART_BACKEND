@@ -1,18 +1,13 @@
 package movierankchart.domain.movierank.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import movierankchart.domain.kobis.constants.KobisConstants;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Embeddable
 public class MovieRank {
@@ -30,15 +25,14 @@ public class MovieRank {
     private Long theatersCount;
 
     public static MovieRank fromDto(KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto) {
-        boolean isNewRank = kobisBoxOfficeResponseDto.getRankOldAndNew()
+        MovieRank movieRank = new MovieRank();
+        movieRank.rankIncrement = Integer.parseInt(kobisBoxOfficeResponseDto.getRankInten());
+        movieRank.isNewRank = kobisBoxOfficeResponseDto.getRankOldAndNew()
                 .equals(KobisConstants.RANK_NEW) ? true : false;
-        return MovieRank.builder()
-                .rankIncrement(Integer.parseInt(kobisBoxOfficeResponseDto.getRankInten()))
-                .isNewRank(isNewRank)
-                .audienceCount(Long.parseLong(kobisBoxOfficeResponseDto.getAudiCnt()))
-                .sales(Long.parseLong(kobisBoxOfficeResponseDto.getSalesAmt()))
-                .screeningsCount(Long.parseLong(kobisBoxOfficeResponseDto.getScrnCnt()))
-                .theatersCount(Long.parseLong(kobisBoxOfficeResponseDto.getShowCnt()))
-                .build();
+        movieRank.audienceCount = Long.parseLong(kobisBoxOfficeResponseDto.getAudiCnt());
+        movieRank.sales = Long.parseLong(kobisBoxOfficeResponseDto.getSalesAmt());
+        movieRank.screeningsCount = Long.parseLong(kobisBoxOfficeResponseDto.getScrnCnt());
+        movieRank.theatersCount = Long.parseLong(kobisBoxOfficeResponseDto.getShowCnt());
+        return movieRank;
     }
 }

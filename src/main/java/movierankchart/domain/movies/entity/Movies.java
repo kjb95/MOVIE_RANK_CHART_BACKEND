@@ -16,8 +16,6 @@ import java.time.LocalDate;
 
 @Getter
 @Entity
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Movies extends AuditEntity {
     @Id
@@ -40,22 +38,19 @@ public class Movies extends AuditEntity {
     private String ratingGrade;
 
     public static Movies fromDto(KmdbResultResponseDto kmdbResultResponseDto) {
+        Movies movies = new Movies();
+        movies.moviesId = Long.parseLong(kmdbResultResponseDto.getMovieSeq());
+        movies.title = parseKmdbResultTitle(kmdbResultResponseDto.getTitle());
         String openDt = kmdbResultResponseDto.getOpenDt()
                 .replaceAll(KobisConstants.OPEN_DT_DELIMITER, "");
-        LocalDate date = DateUtils.stringToLocalDate(openDt, BatchConstants.YYYYMMDD);
-        String title = parseKmdbResultTitle(kmdbResultResponseDto.getTitle());
-        String poster = StringUtils.subStringUntil(kmdbResultResponseDto.getPosters(), KmdbConstants.STRING_DELIMITER);
-        return Movies.builder()
-                .moviesId(Long.parseLong(kmdbResultResponseDto.getMovieSeq()))
-                .title(title)
-                .openingDate(date)
-                .poster(poster)
-                .genre(kmdbResultResponseDto.getGenre())
-                .nation(kmdbResultResponseDto.getNation())
-                .company(kmdbResultResponseDto.getCompany())
-                .runtime(kmdbResultResponseDto.getRuntime())
-                .ratingGrade(kmdbResultResponseDto.getRating())
-                .build();
+        movies.openingDate = DateUtils.stringToLocalDate(openDt, BatchConstants.YYYYMMDD);
+        movies.poster = StringUtils.subStringUntil(kmdbResultResponseDto.getPosters(), KmdbConstants.STRING_DELIMITER);
+        movies.genre = kmdbResultResponseDto.getGenre();
+        movies.nation = kmdbResultResponseDto.getNation();
+        movies.company = kmdbResultResponseDto.getCompany();
+        movies.runtime = kmdbResultResponseDto.getRuntime();
+        movies.ratingGrade = kmdbResultResponseDto.getRating();
+        return movies;
     }
 
     static String parseKmdbResultTitle(String title) {

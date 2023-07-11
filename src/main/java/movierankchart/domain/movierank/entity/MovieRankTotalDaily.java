@@ -15,8 +15,6 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieRankTotalDaily extends AuditEntity {
     @EmbeddedId
@@ -28,15 +26,12 @@ public class MovieRankTotalDaily extends AuditEntity {
     private MovieRank movieRank;
 
     public static MovieRankTotalDaily createMovieRankTotalDaily(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto, KmdbResultResponseDto kmdbResultResponseDto) {
+        MovieRankTotalDaily movieRankTotalDaily = new MovieRankTotalDaily();
         LocalDate date = computeShowRangeDate(showRange);
-        MovieRankId movieRankId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRank()));
-        Movies movies = Movies.fromDto(kmdbResultResponseDto);
-        MovieRank movieRank = MovieRank.fromDto(kobisBoxOfficeResponseDto);
-        return MovieRankTotalDaily.builder()
-                .movieRankTotalDailyId(movieRankId)
-                .movies(movies)
-                .movieRank(movieRank)
-                .build();
+        movieRankTotalDaily.movieRankTotalDailyId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRank()));
+        movieRankTotalDaily.movies = Movies.fromDto(kmdbResultResponseDto);
+        movieRankTotalDaily.movieRank = MovieRank.fromDto(kobisBoxOfficeResponseDto);
+        return movieRankTotalDaily;
     }
 
     private static LocalDate computeShowRangeDate(String showRange) {

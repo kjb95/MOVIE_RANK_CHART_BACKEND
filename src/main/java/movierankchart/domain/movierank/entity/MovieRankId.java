@@ -1,9 +1,6 @@
 package movierankchart.domain.movierank.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,7 +10,7 @@ import java.time.LocalDate;
 @Embeddable
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
 public class MovieRankId implements Serializable {
     @Column(nullable = false)

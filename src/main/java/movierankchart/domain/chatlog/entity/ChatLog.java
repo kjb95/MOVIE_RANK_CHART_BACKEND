@@ -9,8 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatLog extends AuditEntity {
     @Id

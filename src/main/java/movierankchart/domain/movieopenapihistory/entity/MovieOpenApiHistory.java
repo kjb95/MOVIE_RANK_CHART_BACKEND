@@ -11,8 +11,6 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieOpenApiHistory extends AuditEntity {
     @Id
