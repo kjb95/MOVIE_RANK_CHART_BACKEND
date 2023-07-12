@@ -1,41 +1,30 @@
 package movierankchart.domain.movierank.entity;
 
-import lombok.*;
+import lombok.Getter;
 import movierankchart.batch.constants.BatchConstants;
-import movierankchart.common.entity.AuditEntity;
 import movierankchart.common.utils.DateUtils;
 import movierankchart.common.utils.StringUtils;
 import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import movierankchart.domain.kobis.constants.KobisConstants;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
+import movierankchart.domain.movierank.constants.MovieRankType;
 import movierankchart.domain.movies.entity.Movies;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MovieRankTotalDaily extends AuditEntity {
-    @EmbeddedId
-    private MovieRankId movieRankTotalDailyId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movies_id")
-    private Movies movies;
-    @Embedded
-    private MovieRank movieRank;
+public class MovieRankTotalDaily extends MovieRankBase {
 
-    public static MovieRankTotalDaily createMovieRankTotalDaily(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto, KmdbResultResponseDto kmdbResultResponseDto) {
+    @Override
+    public MovieRankBase createMovieRank(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto, KmdbResultResponseDto kmdbResultResponseDto) {
         MovieRankTotalDaily movieRankTotalDaily = new MovieRankTotalDaily();
-        LocalDate date = computeShowRangeDate(showRange);
-        movieRankTotalDaily.movieRankTotalDailyId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRank()));
-        movieRankTotalDaily.movies = Movies.fromDto(kmdbResultResponseDto);
-        movieRankTotalDaily.movieRank = MovieRank.fromDto(kobisBoxOfficeResponseDto);
-        return movieRankTotalDaily;
-    }
-
-    private static LocalDate computeShowRangeDate(String showRange) {
         String dateString = StringUtils.subStringUntil(showRange, KobisConstants.SHOW_RANGE_DELIMITER);
-        return DateUtils.stringToLocalDate(dateString, BatchConstants.YYYYMMDD);
+        LocalDate date = DateUtils.stringToLocalDate(dateString, BatchConstants.YYYYMMDD);
+        movieRankTotalDaily.movieRankId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRank()), MovieRankType.TOTAL_DAILY);
+        movieRankTotalDaily.movies = Movies.fromDto(kmdbResultResponseDto);
+        movieRankTotalDaily.movieRankStatistics = MovieRankStatistics.fromDto(kobisBoxOfficeResponseDto);
+        return movieRankTotalDaily;
     }
 }

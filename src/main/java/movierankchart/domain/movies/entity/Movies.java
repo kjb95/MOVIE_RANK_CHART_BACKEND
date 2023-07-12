@@ -22,7 +22,7 @@ public class Movies extends AuditEntity {
     private Long moviesId;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column
     private LocalDate openingDate;
     @Column(nullable = false)
     private String poster;

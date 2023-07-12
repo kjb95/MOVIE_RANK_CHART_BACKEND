@@ -10,6 +10,9 @@ public class DateUtils {
     }
 
     public static LocalDate stringToLocalDate(String dateString, String format) {
+        if (dateString.trim().isEmpty()) {
+            return null;
+        }
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
         return LocalDate.parse(dateString, dateTimeFormatter);
     }

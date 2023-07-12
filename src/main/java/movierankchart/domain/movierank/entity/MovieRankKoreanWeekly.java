@@ -1,20 +1,17 @@
 package movierankchart.domain.movierank.entity;
 
-import lombok.*;
-import movierankchart.common.entity.AuditEntity;
-import movierankchart.domain.movies.entity.Movies;
+import lombok.Getter;
+import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
+import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MovieRankKoreanWeekly extends AuditEntity {
-    @EmbeddedId
-    private MovieRankId movieRankKoreanWeeklyId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movies_id")
-    private Movies movies;
-    @Embedded
-    private MovieRank movieRank;
+public class MovieRankKoreanWeekly extends MovieRankBase {
+
+    @Override
+    public MovieRankBase createMovieRank(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto, KmdbResultResponseDto kmdbResultResponseDto) {
+        return null;
+    }
 }
