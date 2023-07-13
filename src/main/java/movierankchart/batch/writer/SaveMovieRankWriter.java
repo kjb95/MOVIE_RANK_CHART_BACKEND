@@ -12,53 +12,25 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Component
-public class SaveMovieRankWriter extends JpaItemWriter<List<MovieRankBase>> {
+public class SaveMovieRankWriter extends JpaItemWriter<List<MovieRank>> {
     @Autowired
     private MoviesRepository moviesRepository;
     @Autowired
-    private MovieRankTotalDailyRepository movieRankTotalDailyRepository;
-    @Autowired
-    private MovieRankKoreanDailyRepository movieRankKoreanDailyRepository;
-    @Autowired
-    private MovieRankForeignDailyRepository movieRankForeignDailyRepository;
-    @Autowired
-    private MovieRankTotalWeeklyRepository movieRankTotalWeeklyRepository;
-    @Autowired
-    private MovieRankKoreanWeeklyRepository movieRankKoreanWeeklyRepository;
-    @Autowired
-    private MovieRankForeignWeeklyRepository movieRankForeignWeeklyRepository;
+    private MovieRankRepository movieRankRepository;
 
     public SaveMovieRankWriter(EntityManagerFactory entityManagerFactory) {
         setEntityManagerFactory(entityManagerFactory);
     }
 
     @Override
-    public void write(List<? extends List<MovieRankBase>> items) {
+    public void write(List<? extends List<MovieRank>> items) {
         items.forEach(itemList -> itemList.forEach(this::saveMovieRank));
     }
 
-    private void saveMovieRank(MovieRankBase item) {
+    private void saveMovieRank(MovieRank item) {
         Movies movies = item.getMovies();
         moviesRepository.findById(movies.getMoviesId())
                 .orElseGet(() -> moviesRepository.save(movies));
-        if (item instanceof MovieRankTotalDaily) {
-            movieRankTotalDailyRepository.save((MovieRankTotalDaily) item);
-        } else if (item instanceof MovieRankKoreanDaily) {
-            movieRankKoreanDailyRepository.save((MovieRankKoreanDaily) item);
-        }
-        else if (item instanceof MovieRankForeignDaily) {
-            movieRankForeignDailyRepository.save((MovieRankForeignDaily) item);
-        }
-        else if (item instanceof MovieRankTotalWeekly) {
-            movieRankTotalWeeklyRepository.save((MovieRankTotalWeekly) item);
-        }
-        else if (item instanceof MovieRankKoreanWeekly) {
-            movieRankKoreanWeeklyRepository.save((MovieRankKoreanWeekly) item);
-        }
-        else if (item instanceof MovieRankForeignWeekly) {
-            movieRankForeignWeeklyRepository.save((MovieRankForeignWeekly) item);
-        }
+        movieRankRepository.save(item);
     }
-
-
 }

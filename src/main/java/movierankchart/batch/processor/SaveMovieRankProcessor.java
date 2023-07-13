@@ -6,7 +6,7 @@ import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import movierankchart.domain.kmdb.service.KmdbService;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 import movierankchart.domain.kobis.dto.KobisMovieRankResponseDto;
-import movierankchart.domain.movierank.entity.MovieRankBase;
+import movierankchart.domain.movierank.entity.MovieRank;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankResponseDto, List<MovieRankBase>> {
+public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankResponseDto, List<MovieRank>> {
     private final KmdbService kmdbService;
     private MovieRankType movieRankType;
 
@@ -27,7 +27,7 @@ public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankRespo
         movieRankType = MovieRankType.findStepTypeByStepName(stepName);
     }
     @Override
-    public List<MovieRankBase> process(KobisMovieRankResponseDto item) {
+    public List<MovieRank> process(KobisMovieRankResponseDto item) {
         String showRange = item.getBoxOfficeResult()
                 .getShowRange();
         return item.getBoxOfficeResult()
@@ -37,9 +37,8 @@ public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankRespo
                 .collect(Collectors.toList());
     }
 
-    private MovieRankBase createMovieTotalDaily(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto) {
+    private MovieRank createMovieTotalDaily(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto) {
         KmdbResultResponseDto kmdbResultResponseDto = kmdbService.findMovieDetail(kobisBoxOfficeResponseDto.getMovieNm(), kobisBoxOfficeResponseDto.getMovieCd(), kobisBoxOfficeResponseDto.getOpenDt());
-        MovieRankBase movieRankBase = movieRankType.getMovieRankBase();
-        return movieRankBase.createMovieRank(showRange, kobisBoxOfficeResponseDto, kmdbResultResponseDto);
+        return MovieRank.createMovieRank(showRange, kobisBoxOfficeResponseDto, kmdbResultResponseDto, movieRankType);
     }
 }

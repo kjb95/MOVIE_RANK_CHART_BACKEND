@@ -7,7 +7,7 @@ import movierankchart.batch.processor.SaveMovieRankProcessor;
 import movierankchart.batch.reader.SaveMovieRankReader;
 import movierankchart.batch.writer.SaveMovieRankWriter;
 import movierankchart.domain.kobis.dto.KobisMovieRankResponseDto;
-import movierankchart.domain.movierank.entity.MovieRankBase;
+import movierankchart.domain.movierank.entity.MovieRank;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -49,7 +49,7 @@ public class JobConfiguration {
 
     private TaskletStep createMovieRankStep(String stepName) {
         return stepBuilderFactory.get(stepName)
-                .<KobisMovieRankResponseDto, List<MovieRankBase>>chunk(32)
+                .<KobisMovieRankResponseDto, List<MovieRank>>chunk(32)
                 .reader(saveMovieRankReader)
                 .processor(saveMovieRankProcessor)
                 .writer(saveMovieRankWriter)
