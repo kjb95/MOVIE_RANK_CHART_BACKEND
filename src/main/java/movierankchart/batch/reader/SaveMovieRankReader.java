@@ -36,7 +36,7 @@ public class SaveMovieRankReader implements ItemReader<KobisMovieRankResponseDto
     public KobisMovieRankResponseDto read() {
         LocalDate date = startDate.minusDays(KobisConstants.DAILY_API_CALLS)
                 .plusDays(openApiCallCount * movieRankType.getDateInterval());
-        if (++openApiCallCount >= movieRankType.getApiCallCount()) {
+        if (openApiCallCount++ >= movieRankType.getApiCallCount()) {
             openApiCallCount = 0;
             return null;
         }

@@ -33,6 +33,10 @@ public class JobConfiguration {
         return jobBuilderFactory.get("saveMovieRankJob")
                 .start(saveMovieRankTotalDailyStep())
                 .next(saveMovieRankKoreanDailyStep())
+                .next(saveMovieRankForeignDailyStep())
+                .next(saveMovieRankTotalWeeklyStep())
+                .next(saveMovieRankKoreanWeeklyStep())
+                .next(saveMovieRankForeignWeeklyStep())
                 .listener(saveMovieRankJobListener)
                 .build();
     }
@@ -45,6 +49,26 @@ public class JobConfiguration {
     @Bean
     Step saveMovieRankKoreanDailyStep() {
         return createMovieRankStep(MovieRankType.KOREAN_DAILY.getStepName());
+    }
+
+    @Bean
+    Step saveMovieRankForeignDailyStep() {
+        return createMovieRankStep(MovieRankType.FOREIGN_DAILY.getStepName());
+    }
+
+    @Bean
+    Step saveMovieRankTotalWeeklyStep() {
+        return createMovieRankStep(MovieRankType.TOTAL_WEEKLY.getStepName());
+    }
+
+    @Bean
+    Step saveMovieRankKoreanWeeklyStep() {
+        return createMovieRankStep(MovieRankType.KOREAN_WEEKLY.getStepName());
+    }
+
+    @Bean
+    Step saveMovieRankForeignWeeklyStep() {
+        return createMovieRankStep(MovieRankType.FOREIGN_WEEKLY.getStepName());
     }
 
     private TaskletStep createMovieRankStep(String stepName) {

@@ -1,7 +1,6 @@
 package movierankchart.domain.kmdb.service;
 
 import lombok.RequiredArgsConstructor;
-import movierankchart.common.exception.ErrorCode;
 import movierankchart.common.service.WebClientService;
 import movierankchart.domain.kmdb.constants.KmdbConstants;
 import movierankchart.domain.kmdb.dto.KmdbMovieDetailResponseDto;
@@ -12,7 +11,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +40,7 @@ public class KmdbService {
 
     private KmdbResultResponseDto findMovieDetail(List<KmdbResultResponseDto> results, String movieCd, String openDt) {
         if (results == null) {
-            throw new NoSuchElementException(ErrorCode.KMDB_MOVIE_DETAIL_NOT_FOUND.getMessage());
+            return null;
         }
         KmdbResultResponseDto kmdbResultResponseDto = results.stream()
                 .filter(result -> filterByMovieCdOrOpenDt(result, movieCd, openDt))

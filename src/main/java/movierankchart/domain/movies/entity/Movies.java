@@ -38,6 +38,9 @@ public class Movies extends AuditEntity {
     private String ratingGrade;
 
     public static Movies fromDto(KmdbResultResponseDto kmdbResultResponseDto) {
+        if (kmdbResultResponseDto == null) {
+            return null;
+        }
         Movies movies = new Movies();
         movies.moviesId = Long.parseLong(kmdbResultResponseDto.getMovieSeq());
         movies.title = parseKmdbResultTitle(kmdbResultResponseDto.getTitle());

@@ -22,7 +22,7 @@ public class SaveMovieRankScheduler {
     private final JobLauncher jobLauncher;
     private final Job saveMovieRankJob;
     @Scheduled(fixedDelay = 1000000)
-    public void saveMovieData() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException, JobRestartException {
+    public void saveMovieData() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException, JobRestartException, JobRestartException {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         Date currentDate = new Date(System.currentTimeMillis());
         jobParameterMap.put("currentDate", new JobParameter(currentDate));
