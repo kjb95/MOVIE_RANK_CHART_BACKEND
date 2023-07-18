@@ -23,7 +23,7 @@ import java.time.LocalDate;
 public class MovieRank extends AuditEntity {
     @EmbeddedId
     protected MovieRankId movieRankId;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "movies_id")
     protected Movies movies;
     @Embedded
@@ -33,7 +33,7 @@ public class MovieRank extends AuditEntity {
         MovieRank movieRank = new MovieRank();
         String dateString = StringUtils.subStringUntil(showRange, KobisConstants.SHOW_RANGE_DELIMITER);
         LocalDate date = DateUtils.stringToLocalDate(dateString, BatchConstants.YYYYMMDD);
-        movieRank.movieRankId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRank()), movieRankType);
+        movieRank.movieRankId = new MovieRankId(date, Integer.parseInt(kobisBoxOfficeResponseDto.getRnum()), movieRankType);
         movieRank.movies = Movies.fromDto(kmdbResultResponseDto);
         movieRank.movieRankStatistics = MovieRankStatistics.fromDto(kobisBoxOfficeResponseDto);
         return movieRank;

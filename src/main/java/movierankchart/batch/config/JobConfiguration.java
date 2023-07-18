@@ -1,6 +1,7 @@
 package movierankchart.batch.config;
 
 import lombok.RequiredArgsConstructor;
+import movierankchart.batch.decider.SaveMovieRankJobExecutionDecider;
 import movierankchart.domain.movierank.constants.MovieRankType;
 import movierankchart.batch.listener.SaveMovieRankJobListener;
 import movierankchart.batch.processor.SaveMovieRankProcessor;
@@ -27,6 +28,7 @@ public class JobConfiguration {
     private final SaveMovieRankReader saveMovieRankReader;
     private final SaveMovieRankProcessor saveMovieRankProcessor;
     private final SaveMovieRankWriter saveMovieRankWriter;
+    private final SaveMovieRankJobExecutionDecider saveMovieRankJobExecutionDecider;
 
     @Bean
     public Job saveMovieRankJob() {
@@ -37,6 +39,8 @@ public class JobConfiguration {
                 .next(saveMovieRankTotalWeeklyStep())
                 .next(saveMovieRankKoreanWeeklyStep())
                 .next(saveMovieRankForeignWeeklyStep())
+                .next(saveMovieRankJobExecutionDecider)
+                .end()
                 .listener(saveMovieRankJobListener)
                 .build();
     }

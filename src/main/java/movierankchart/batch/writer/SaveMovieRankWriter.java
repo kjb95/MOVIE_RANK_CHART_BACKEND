@@ -29,8 +29,9 @@ public class SaveMovieRankWriter extends JpaItemWriter<List<MovieRank>> {
 
     private void saveMovieRank(MovieRank item) {
         Movies movies = item.getMovies();
-        moviesRepository.findById(movies.getMoviesId())
-                .orElseGet(() -> moviesRepository.save(movies));
+        if (movies != null) {
+            moviesRepository.save(movies);
+        }
         movieRankRepository.save(item);
     }
 }

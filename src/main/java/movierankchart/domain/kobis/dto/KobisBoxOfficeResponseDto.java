@@ -9,7 +9,7 @@ public class KobisBoxOfficeResponseDto {
     private String movieCd;
     private String movieNm;
     private String openDt;
-    private String rank;
+    private String rnum;
     private String rankInten;
     private String rankOldAndNew;
     private String audiCnt;
