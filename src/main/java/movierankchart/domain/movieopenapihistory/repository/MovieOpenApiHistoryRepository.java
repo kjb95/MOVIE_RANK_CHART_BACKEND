@@ -23,4 +23,9 @@ public interface MovieOpenApiHistoryRepository extends JpaRepository<MovieOpenAp
     @Transactional
     @Query("UPDATE MovieOpenApiHistory m SET m.startDate = :startDate")
     void updateStartDate(@Param("startDate") LocalDate startDate);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE MovieOpenApiHistory m SET m.endDate = :endDate")
+    void updateEndDate(@Param("endDate") LocalDate endDate);
 }

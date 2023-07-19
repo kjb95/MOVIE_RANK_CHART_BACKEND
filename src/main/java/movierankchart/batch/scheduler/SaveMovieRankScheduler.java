@@ -20,14 +20,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SaveMovieRankScheduler {
     private final JobLauncher jobLauncher;
-    private final Job saveMovieRankJob;
+    private final Job saveMovieRankPastJob;
+    private final Job saveMovieRankRecentJob;
+
     @Scheduled(fixedDelay = 20000000)
-    public void saveMovieData() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+    public void saveMovieRankPast() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         Date currentDate = new Date(System.currentTimeMillis());
         jobParameterMap.put("currentDate", new JobParameter(currentDate));
         jobParameterMap.put("currentTime", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(jobParameterMap);
-        jobLauncher.run(saveMovieRankJob, jobParameters);
+        jobLauncher.run(saveMovieRankPastJob, jobParameters);
+        jobLauncher.run(saveMovieRankRecentJob, jobParameters);
     }
 }

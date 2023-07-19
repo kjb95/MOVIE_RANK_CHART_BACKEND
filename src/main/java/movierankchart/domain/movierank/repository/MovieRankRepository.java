@@ -15,6 +15,9 @@ public interface MovieRankRepository extends JpaRepository<MovieRank, Long> {
     @Query("SELECT min(m.movieRankId.date) FROM MovieRank m")
     LocalDate findMinDate();
 
+    @Query("SELECT max(m.movieRankId.date) FROM MovieRank m")
+    LocalDate findMaxDate();
+
     @Query("SELECT m from MovieRank m WHERE m.movieRankId.date = :date AND m.movieRankId.movieRankType = :movieRankType")
     List<MovieRank> findMovieRankByDateAndMovieRankType(@Param("date") LocalDate date, @Param("movieRankType")MovieRankType movieRankType);
 }
