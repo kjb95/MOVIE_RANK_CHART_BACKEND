@@ -20,5 +20,7 @@ public class MovieOpenApiHistory extends AuditEntity {
     @Column(nullable = false)
     private LocalDate startDate;
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDateDaily;
+    @Column(nullable = false)
+    private LocalDate endDateWeekly;
 }

@@ -29,9 +29,9 @@ public class MovieRankChartDataTests {
         // given
         LocalDate startDate = movieOpenApiHistoryRepository.findStartDate()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()));
-        LocalDate endDate = movieOpenApiHistoryRepository.findEndDate()
+        LocalDate endDateDaily = movieOpenApiHistoryRepository.findEndDateDaily()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()));
-        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate, endDate);
+        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate, endDateDaily);
 
         // when
         boolean hasInvalidMovieRankData = movieRankService.hasInvalidMovieRankData(datesInRange);

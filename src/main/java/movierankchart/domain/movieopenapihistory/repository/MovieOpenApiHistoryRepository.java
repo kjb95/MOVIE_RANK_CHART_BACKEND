@@ -16,9 +16,11 @@ public interface MovieOpenApiHistoryRepository extends JpaRepository<MovieOpenAp
     @Query("SELECT m.startDate FROM MovieOpenApiHistory m")
     Optional<LocalDate> findStartDate();
 
-    @Query("SELECT m.endDate FROM MovieOpenApiHistory m")
-    Optional<LocalDate> findEndDate();
+    @Query("SELECT m.endDateDaily FROM MovieOpenApiHistory m")
+    Optional<LocalDate> findEndDateDaily();
 
+    @Query("SELECT m.endDateWeekly FROM MovieOpenApiHistory m")
+    Optional<LocalDate> findEndDateWeekly();
     @Modifying
     @Transactional
     @Query("UPDATE MovieOpenApiHistory m SET m.startDate = :startDate")
@@ -26,6 +28,11 @@ public interface MovieOpenApiHistoryRepository extends JpaRepository<MovieOpenAp
 
     @Modifying
     @Transactional
-    @Query("UPDATE MovieOpenApiHistory m SET m.endDate = :endDate")
-    void updateEndDate(@Param("endDate") LocalDate endDate);
+    @Query("UPDATE MovieOpenApiHistory m SET m.endDateDaily = :endDateDaily")
+    void updateEndDateDaily(@Param("endDateDaily") LocalDate endDateDaily);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE MovieOpenApiHistory m SET m.endDateWeekly = :endDateWeekly")
+    void updateEndDateWeekly(@Param("endDateWeekly") LocalDate endDateWeekly);
 }

@@ -15,18 +15,18 @@ import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
-public class SaveMovieRankRecentReader implements ItemReader<KobisMovieRankResponseDto> {
+public class SaveMovieRankRecentDailyReader implements ItemReader<KobisMovieRankResponseDto> {
     private final KobisService kobisService;
     private boolean isRead = false;
-    private LocalDate endDate;
+    private LocalDate endDateDaily;
     private MovieRankType movieRankType;
 
     @BeforeStep
     public void beforeStep(StepExecution stepExecution) {
-        String endDateString = (String) stepExecution.getJobExecution()
+        String endDateDailyString = (String) stepExecution.getJobExecution()
                 .getExecutionContext()
-                .get(BatchConstants.END_DATE);
-        endDate = DateUtils.stringToLocalDate(endDateString, BatchConstants.YYYYMMDD);
+                .get(BatchConstants.END_DATE_DAILY);
+        endDateDaily = DateUtils.stringToLocalDate(endDateDailyString, BatchConstants.YYYYMMDD);
         String stepName = stepExecution.getStepName();
         movieRankType = MovieRankType.findStepTypeByStepName(stepName);
     }
@@ -38,6 +38,6 @@ public class SaveMovieRankRecentReader implements ItemReader<KobisMovieRankRespo
             return null;
         }
         isRead = true;
-        return kobisService.findMovieRank(endDate, movieRankType.getRepNationCd(), movieRankType.getKobisApiPath());
+        return kobisService.findMovieRank(endDateDaily, movieRankType.getRepNationCd(), movieRankType.getKobisApiPath());
     }
 }

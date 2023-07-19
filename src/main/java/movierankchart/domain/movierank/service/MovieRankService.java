@@ -16,22 +16,37 @@ public class MovieRankService {
     private final MovieRankRepository movieRankRepository;
 
     public boolean hasInvalidMovieRankData(List<LocalDate> datesInRange) {
+        return hasInvalidMovieRankDailyData(datesInRange) || hasInvalidMovieRankWeeklyData(datesInRange);
+    }
+
+    public boolean hasInvalidMovieRankDailyData(List<LocalDate> datesInRange) {
         return datesInRange.stream()
-                .filter(this::isInvalidMovieRankData)
+                .filter(this::isInvalidMovieRankDailyData)
                 .count() > 0;
     }
 
-    private boolean isInvalidMovieRankData(LocalDate date) {
+    public boolean hasInvalidMovieRankWeeklyData(List<LocalDate> datesInRange) {
+        return datesInRange.stream()
+                .filter(this::isInvalidMovieRankWeeklyData)
+                .count() > 0;
+    }
+
+    private boolean isInvalidMovieRankDailyData(LocalDate date) {
         List<MovieRank> totalDailyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.TOTAL_DAILY);
         List<MovieRank> koreanDailyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.KOREAN_DAILY);
         List<MovieRank> foreignDailyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.FOREIGN_DAILY);
-        List<MovieRank> totalWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.TOTAL_WEEKLY);
-        List<MovieRank> koreanWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.KOREAN_WEEKLY);
-        List<MovieRank> foreignWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.FOREIGN_WEEKLY);
 
         if (totalDailyMovieRanks.size() != 10 || koreanDailyMovieRanks.size() != 10 || foreignDailyMovieRanks.size() != 10) {
             return true;
         }
+        return false;
+    }
+
+    private boolean isInvalidMovieRankWeeklyData(LocalDate date) {
+        List<MovieRank> totalWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.TOTAL_WEEKLY);
+        List<MovieRank> koreanWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.KOREAN_WEEKLY);
+        List<MovieRank> foreignWeeklyMovieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(date, MovieRankType.FOREIGN_WEEKLY);
+
         if ((date.getDayOfWeek() != DayOfWeek.MONDAY) && (totalWeeklyMovieRanks.size() != 0 || koreanWeeklyMovieRanks.size() != 0 || foreignWeeklyMovieRanks.size() != 0)) {
             return true;
         }

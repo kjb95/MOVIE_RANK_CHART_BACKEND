@@ -21,9 +21,9 @@ public class DateUtils {
         return LocalDate.parse(dateString, dateTimeFormatter);
     }
 
-    public static List<LocalDate> getLocalDatesInRange(LocalDate startDate, LocalDate endDate) {
+    public static List<LocalDate> getLocalDatesInRange(LocalDate startDate, LocalDate endDateDaily) {
         return Stream.iterate(startDate, date -> date.plusDays(1))
-                .limit(ChronoUnit.DAYS.between(startDate, endDate.plusDays(1)))
+                .limit(ChronoUnit.DAYS.between(startDate, endDateDaily.plusDays(1)))
                 .collect(Collectors.toList());
     }
 }

@@ -18,20 +18,20 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
-public class SaveMovieRankRecentJobListener {
+public class SaveMovieRankRecentWeeklyJobListener {
     private final MovieOpenApiHistoryRepository movieOpenApiHistoryRepository;
     private final MovieRankRepository movieRankRepository;
     private final MovieRankService movieRankService;
-    private LocalDate endDate;
+    private LocalDate endDateWeekly;
 
     @BeforeJob
     public void beforeJob(JobExecution jobExecution) {
-        endDate = movieOpenApiHistoryRepository.findEndDate()
+        endDateWeekly = movieOpenApiHistoryRepository.findEndDateWeekly()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()))
-                .plusDays(1);
-        String dateString = DateUtils.localDateToString(endDate, BatchConstants.YYYYMMDD);
+                .plusDays(7);
+        String dateString = DateUtils.localDateToString(endDateWeekly, BatchConstants.YYYYMMDD);
         jobExecution.getExecutionContext()
-                .put(BatchConstants.END_DATE, dateString);
+                .put(BatchConstants.END_DATE_WEEKLY, dateString);
     }
 
     @AfterJob
@@ -39,13 +39,13 @@ public class SaveMovieRankRecentJobListener {
         if (jobExecution.getStatus() != BatchStatus.COMPLETED) {
             return;
         }
-        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(endDate, endDate);
-        boolean hasInvalidMovieRankData = movieRankService.hasInvalidMovieRankData(datesInRange);
-        if (hasInvalidMovieRankData) {
+        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(endDateWeekly, endDateWeekly);
+        boolean hasInvalidMovieRankWeeklyData = movieRankService.hasInvalidMovieRankWeeklyData(datesInRange);
+        if (hasInvalidMovieRankWeeklyData) {
             jobExecution.setStatus(BatchStatus.FAILED);
             return;
         }
-        LocalDate maxDate = movieRankRepository.findMaxDate();
-        movieOpenApiHistoryRepository.updateEndDate(maxDate);
+        LocalDate endDateWeekly = movieRankRepository.findEaxDateWeekly();
+        movieOpenApiHistoryRepository.updateEndDateWeekly(endDateWeekly);
     }
 }

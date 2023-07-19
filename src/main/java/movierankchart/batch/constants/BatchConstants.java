@@ -2,7 +2,8 @@ package movierankchart.batch.constants;
 
 public class BatchConstants {
     public static final String START_DATE = "startDate";
-    public static final String END_DATE = "endDate";
+    public static final String END_DATE_DAILY = "endDateDaily";
+    public static final String END_DATE_WEEKLY = "endDateWeekly";
     public static final String YYYYMMDD = "yyyyMMdd";
     public static final String SAVE_MOVIE_RANK_TOTAL_DAILY_STEP = "saveMovieRankTotalDailyStep";
     public static final String SAVE_MOVIE_RANK_KOREAN_DAILY_STEP = "saveMovieRankKoreanDailyStep";
