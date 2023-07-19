@@ -1,6 +1,8 @@
 package movierankchart.batch.processor;
 
 import lombok.RequiredArgsConstructor;
+import movierankchart.batch.constants.BatchConstants;
+import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.kobis.constants.KobisConstants;
 import movierankchart.domain.movierank.constants.MovieRankType;
 import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
@@ -8,11 +10,14 @@ import movierankchart.domain.kmdb.service.KmdbService;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 import movierankchart.domain.kobis.dto.KobisMovieRankResponseDto;
 import movierankchart.domain.movierank.entity.MovieRank;
+import movierankchart.domain.movies.entity.Movies;
+import movierankchart.domain.movies.repository.MoviesRepository;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankResponseDto, List<MovieRank>> {
     private final KmdbService kmdbService;
+    private final MoviesRepository moviesRepository;
     private MovieRankType movieRankType;
 
     @BeforeStep
@@ -49,7 +55,16 @@ public class SaveMovieRankProcessor implements ItemProcessor<KobisMovieRankRespo
     }
 
     private MovieRank createMovieRank(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto) {
+        String openDtString = kobisBoxOfficeResponseDto.getOpenDt()
+                .replace(KobisConstants.OPEN_DT_DELIMITER, "");
+        LocalDate openDt = DateUtils.stringToLocalDate(openDtString, BatchConstants.YYYYMMDD);
+        Movies movies = moviesRepository.findMoviesByTitleAndOpeningDate(kobisBoxOfficeResponseDto.getMovieNm(), openDt)
+                .orElseGet(() -> findMovieDetail(kobisBoxOfficeResponseDto));
+        return MovieRank.createMovieRank(showRange, kobisBoxOfficeResponseDto, movies, movieRankType);
+    }
+
+    private Movies findMovieDetail(KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto) {
         KmdbResultResponseDto kmdbResultResponseDto = kmdbService.findMovieDetail(kobisBoxOfficeResponseDto.getMovieNm(), kobisBoxOfficeResponseDto.getMovieCd(), kobisBoxOfficeResponseDto.getOpenDt());
-        return MovieRank.createMovieRank(showRange, kobisBoxOfficeResponseDto, kmdbResultResponseDto, movieRankType);
+        return Movies.fromDto(kmdbResultResponseDto);
     }
 }
