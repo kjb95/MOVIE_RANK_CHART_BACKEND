@@ -1,7 +1,7 @@
 package movierankchart.batch.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import movierankchart.common.exception.ErrorCode;
+import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
@@ -28,7 +28,7 @@ public class SaveMovieRankScheduler {
     private final Job saveMovieRankRecentWeeklyJob;
     private final MovieOpenApiHistoryRepository movieOpenApiHistoryRepository;
 
-    @Scheduled(fixedDelay = 1800000)
+    @Scheduled(fixedDelay = 1200000)
     public void saveMovieRankPastJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         jobParameterMap.put("currentTime", new JobParameter(System.currentTimeMillis()));
@@ -39,7 +39,7 @@ public class SaveMovieRankScheduler {
     @Scheduled(fixedDelay = 86400000)
     public void saveMovieRankRecentDailyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         LocalDate endDateDaily = movieOpenApiHistoryRepository.findEndDateDaily()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
         LocalDate currentDate = LocalDate.now();
         if (ChronoUnit.DAYS.between(endDateDaily, currentDate) == 1) {
             return;
@@ -53,7 +53,7 @@ public class SaveMovieRankScheduler {
     @Scheduled(fixedDelay = 604800000)
     public void saveMovieRankRecentWeeklyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         LocalDate endDateWeekly = movieOpenApiHistoryRepository.findEndDateWeekly()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
         LocalDate currentDate = LocalDate.now();
         if (ChronoUnit.DAYS.between(endDateWeekly, currentDate) < 14) {
             return;

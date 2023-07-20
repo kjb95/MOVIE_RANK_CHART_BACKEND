@@ -3,7 +3,7 @@ package movierankchart.domain.movierank.constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import movierankchart.batch.constants.BatchConstants;
-import movierankchart.common.exception.ErrorCode;
+import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.domain.kobis.constants.KobisConstants;
 
 import java.util.Arrays;
@@ -30,6 +30,6 @@ public enum MovieRankType {
                 .filter(movieRankType -> movieRankType.getStepName()
                         .equals(stepName))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.STEP_TYPE_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(BatchErrorMessage.STEP_TYPE_NOT_FOUND));
     }
 }

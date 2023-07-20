@@ -10,6 +10,7 @@ import movierankchart.common.utils.StringUtils;
 import movierankchart.domain.kobis.constants.KobisConstants;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 import movierankchart.domain.movierank.constants.MovieRankType;
+import movierankchart.domain.movierank.dto.FindMovieRankResponseDto;
 import movierankchart.domain.movies.entity.Movies;
 
 import javax.persistence.*;
@@ -36,5 +37,9 @@ public class MovieRank extends AuditEntity {
         movieRank.movies = movies;
         movieRank.movieRankStatistics = MovieRankStatistics.fromDto(kobisBoxOfficeResponseDto);
         return movieRank;
+    }
+
+    public FindMovieRankResponseDto toFindMovieRankResponseDto() {
+        return new FindMovieRankResponseDto(movieRankStatistics.isNewRank(), movieRankId.getRank(), movieRankStatistics.getRankIncrement(), movieRankStatistics.getAudienceCount(), movies.getTitle(), movies.getPoster(), movies.getOpeningDate());
     }
 }

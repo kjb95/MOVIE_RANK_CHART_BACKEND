@@ -13,6 +13,8 @@ public class WebClientService {
     private WebClient createWebClient(String baseUrl) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
+                        .maxInMemorySize(-1))
                 .build();
     }
 

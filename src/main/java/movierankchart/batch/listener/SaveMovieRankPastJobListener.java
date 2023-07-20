@@ -2,7 +2,7 @@ package movierankchart.batch.listener;
 
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchConstants;
-import movierankchart.common.exception.ErrorCode;
+import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
@@ -27,7 +27,7 @@ public class SaveMovieRankPastJobListener {
     @BeforeJob
     public void beforeJob(JobExecution jobExecution) {
         startDate = movieOpenApiHistoryRepository.findStartDate()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.MOVIE_OPEN_API_HISTORY_EMPTY.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
         String dateString = DateUtils.localDateToString(startDate, BatchConstants.YYYYMMDD);
         jobExecution.getExecutionContext()
                 .put(BatchConstants.START_DATE, dateString);

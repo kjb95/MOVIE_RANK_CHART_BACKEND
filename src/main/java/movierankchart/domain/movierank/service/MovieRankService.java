@@ -1,7 +1,11 @@
 package movierankchart.domain.movierank.service;
 
 import lombok.RequiredArgsConstructor;
+import movierankchart.domain.movierank.constants.MovieRankErrorMessage;
 import movierankchart.domain.movierank.constants.MovieRankType;
+import movierankchart.domain.movierank.dto.FindMovieRankResponseDto;
+import movierankchart.domain.movierank.dto.FindMovieRankResponseDtos;
+import movierankchart.domain.movierank.dto.FindMovieRequestDto;
 import movierankchart.domain.movierank.entity.MovieRank;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -54,5 +60,16 @@ public class MovieRankService {
             return true;
         }
         return false;
+    }
+
+    public FindMovieRankResponseDtos findMovieRank(FindMovieRequestDto findMovieRequestDto) {
+        List<MovieRank> movieRanks = movieRankRepository.findMovieRankByDateAndMovieRankType(findMovieRequestDto.getDate(), findMovieRequestDto.getMovieRankType());
+        if (movieRanks.size() == 0) {
+            throw new NoSuchElementException(MovieRankErrorMessage.MOVIE_RANK_NOT_FOUND_DATE);
+        }
+        List<FindMovieRankResponseDto> findMovieRankResponseDtos = movieRanks.stream()
+                .map(MovieRank::toFindMovieRankResponseDto)
+                .collect(Collectors.toList());
+        return new FindMovieRankResponseDtos(findMovieRankResponseDtos);
     }
 }
