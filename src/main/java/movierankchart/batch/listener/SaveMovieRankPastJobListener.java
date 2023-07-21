@@ -1,6 +1,7 @@
 package movierankchart.batch.listener;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movierankchart.batch.constants.BatchConstants;
 import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.common.utils.DateUtils;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class SaveMovieRankPastJobListener {
@@ -41,6 +43,7 @@ public class SaveMovieRankPastJobListener {
         List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate, startDate.plusDays(BatchConstants.DAILY_API_CALLS - 1));
         boolean hasInvalidMovieRankData = movieRankService.hasInvalidMovieRankData(datesInRange);
         if (hasInvalidMovieRankData) {
+            log.error(BatchErrorMessage.INVALID_MOVIE_RANK_DATA);
             jobExecution.setStatus(BatchStatus.FAILED);
             return;
         }
