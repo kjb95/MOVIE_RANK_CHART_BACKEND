@@ -91,4 +91,13 @@ class MovieRankControllerSuccessTest {
         // then
         resultActions.andExpect(status().isOk());
     }
+
+    @Test
+    void 영화상세_페이지의_라인차트에_필요한_데이터_조회_성공() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/line-chart/58877"));
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
 }

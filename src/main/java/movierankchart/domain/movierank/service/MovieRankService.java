@@ -10,10 +10,7 @@ import movierankchart.domain.movierank.constants.MovieRankErrorMessage;
 import movierankchart.domain.movierank.constants.MovieRankType;
 import movierankchart.domain.movierank.dto.request.FindMovieRankLineChartRequestDto;
 import movierankchart.domain.movierank.dto.request.FindMovieRankTopTenRequestDto;
-import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDto;
-import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDtos;
-import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDto;
-import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDtos;
+import movierankchart.domain.movierank.dto.response.*;
 import movierankchart.domain.movierank.entity.MovieRank;
 import movierankchart.domain.movierank.entity.MovieRankStatistics;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
@@ -111,8 +108,25 @@ public class MovieRankService {
         }
     }
 
+    public FindMovieRankLineChartResponseDtos findMovieRankLineChartByMoviesId(long moviesId) {
+        List<MovieRank> movieRanks = movieRankRepository.findMovieRankByMoviesId(moviesId);
+        if (movieRanks.size() == 0) {
+            throw new NoSuchElementException(MovieRankErrorMessage.INVALID_MOVIES_ID);
+        }
+        LocalDate startDate = movieRanks.get(0)
+                .getMovieRankId()
+                .getDate();
+        LocalDate endDate = movieRanks.get(movieRanks.size() - 1)
+                .getMovieRankId()
+                .getDate();
+        LineChartDatas lineChartDatas = new LineChartDatas(movieRanks, startDate, endDate);
+        return lineChartDatas.toFindMovieRankLineChartResponseDtos();
+    }
+
     @Getter
     public class LineChartDatas {
+        private LocalDate startDate;
+        private LocalDate endDate;
         private LineChartData rank;
         private LineChartData audienceCount;
         private LineChartData sales;
@@ -120,12 +134,13 @@ public class MovieRankService {
         private LineChartData theatersCount;
 
         public LineChartDatas(List<MovieRank> movieRanks, LocalDate startDate, LocalDate endDate) {
+            this.startDate = startDate;
+            this.endDate = endDate;
             rank = new LineChartData(startDate, endDate);
             audienceCount = new LineChartData(startDate, endDate);
             sales = new LineChartData(startDate, endDate);
             screeningsCount = new LineChartData(startDate, endDate);
             theatersCount = new LineChartData(startDate, endDate);
-
             movieRanks.forEach(this::putLineChartData);
         }
 
@@ -157,7 +172,9 @@ public class MovieRankService {
         }
 
         public FindMovieRankLineChartResponseDtos toFindMovieRankLineChartResponseDtos() {
-            return new FindMovieRankLineChartResponseDtos(rank.toFindMovieRankLineChartResponseDtos(), audienceCount.toFindMovieRankLineChartResponseDtos(), sales.toFindMovieRankLineChartResponseDtos(), screeningsCount.toFindMovieRankLineChartResponseDtos(), theatersCount.toFindMovieRankLineChartResponseDtos());
+            LocalDate[] dates = DateUtils.getLocalDatesInRange(startDate, endDate)
+                    .toArray(new LocalDate[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)]);
+            return new FindMovieRankLineChartResponseDtos(dates, rank.toFindMovieRankLineChartResponseDtos(), audienceCount.toFindMovieRankLineChartResponseDtos(), sales.toFindMovieRankLineChartResponseDtos(), screeningsCount.toFindMovieRankLineChartResponseDtos(), theatersCount.toFindMovieRankLineChartResponseDtos());
         }
     }
 
@@ -181,15 +198,11 @@ public class MovieRankService {
 
         private FindMovieRankLineChartResponseDto createFindMovieRankLineChartResponseDto(Map.Entry<String, Map<LocalDate, Long>> movieTitleToDateToDataEntry) {
             String movieTitle = movieTitleToDateToDataEntry.getKey();
-            int totalDaysCount = (int) (ChronoUnit.DAYS.between(startDate, endDate) + 1);
-            LocalDate[] dates = DateUtils.getLocalDatesInRange(startDate, endDate)
-                    .toArray(new LocalDate[totalDaysCount]);
-            long[] datas = new long[totalDaysCount];
-
+            long[] datas = new long[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)];
             movieTitleToDateToDataEntry.getValue()
                     .entrySet()
                     .forEach(dateToDataEntry -> fillDataArray(datas, dateToDataEntry));
-            return new FindMovieRankLineChartResponseDto(movieTitle, dates, datas);
+            return new FindMovieRankLineChartResponseDto(movieTitle, datas);
         }
 
         private void fillDataArray(long[] datas, Map.Entry<LocalDate, Long> dateToDataEntry) {

@@ -24,6 +24,9 @@ public interface MovieRankRepository extends JpaRepository<MovieRank, Long> {
     @Query("SELECT m FROM MovieRank m LEFT OUTER JOIN FETCH m.movies WHERE m.movieRankId.date = :date AND m.movieRankId.movieRankType = :movieRankType ORDER BY m.movieRankId.rank")
     List<MovieRank> findMovieRankByDateAndMovieRankType(@Param("date") LocalDate date, @Param("movieRankType")MovieRankType movieRankType);
 
-    @Query("SELECT m FROM MovieRank m LEFT OUTER JOIN FETCH m.movies WHERE m.movieRankId.date BETWEEN :startDate AND :endDate AND m.movieRankId.movieRankType = 'TOTAL_DAILY'")
+    @Query("SELECT m FROM MovieRank m LEFT OUTER JOIN FETCH m.movies WHERE m.movieRankId.date BETWEEN :startDate AND :endDate AND m.movieRankId.movieRankType = 'TOTAL_DAILY' ORDER BY m.movieRankId.date")
     List<MovieRank> findMovieRankByDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT mr FROM MovieRank mr JOIN FETCH mr.movies m WHERE m.moviesId =:moviesId AND mr.movieRankId.movieRankType = 'TOTAL_DAILY' ORDER BY mr.movieRankId.date")
+    List<MovieRank> findMovieRankByMoviesId(@Param("moviesId") long moviesId);
 }

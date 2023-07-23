@@ -9,6 +9,7 @@ import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseD
 import movierankchart.domain.movierank.service.MovieRankService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,12 +28,17 @@ public class MovieRankController {
         return ResponseEntity.ok(findMovieRankTopTenResponseDtos);
     }
 
-        @Operation(summary = "라인 차트에 필요한 데이터 조회")
-        @GetMapping("/line-chart")
-        public ResponseEntity<FindMovieRankLineChartResponseDtos> findMovieRankLineChart(@Valid FindMovieRankLineChartRequestDto findMovieRankLineChartRequestDto) {
-            FindMovieRankLineChartResponseDtos findMovieRankLineChartResponseDtos = movieRankService.findMovieRankLineChart(findMovieRankLineChartRequestDto);
-            return ResponseEntity.ok(findMovieRankLineChartResponseDtos);
-        }
+    @Operation(summary = "라인 차트에 필요한 데이터 조회")
+    @GetMapping("/line-chart")
+    public ResponseEntity<FindMovieRankLineChartResponseDtos> findMovieRankLineChart(@Valid FindMovieRankLineChartRequestDto findMovieRankLineChartRequestDto) {
+        FindMovieRankLineChartResponseDtos findMovieRankLineChartResponseDtos = movieRankService.findMovieRankLineChart(findMovieRankLineChartRequestDto);
+        return ResponseEntity.ok(findMovieRankLineChartResponseDtos);
+    }
 
-
+    @Operation(summary = "영화 상세 페이지의 라인차트에 필요한 데이터 조회")
+    @GetMapping("/line-chart/{moviesId}")
+    public ResponseEntity<FindMovieRankLineChartResponseDtos> findMovieRankLineChartByMoviesId(@PathVariable long moviesId) {
+        FindMovieRankLineChartResponseDtos movieRankLineChartByMoviesId = movieRankService.findMovieRankLineChartByMoviesId(moviesId);
+        return ResponseEntity.ok(movieRankLineChartByMoviesId);
+    }
 }
