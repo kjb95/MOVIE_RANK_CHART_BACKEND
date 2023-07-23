@@ -1,4 +1,4 @@
-package movierankchart.domain.movierank.dto;
+package movierankchart.domain.movierank.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class FindMovieRankResponseDto {
+public class FindMovieRankTopTenResponseDto {
     private boolean isNewRank;
     private int rank;
     private int rankIncrement;

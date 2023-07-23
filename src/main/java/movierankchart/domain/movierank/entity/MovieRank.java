@@ -10,7 +10,7 @@ import movierankchart.common.utils.StringUtils;
 import movierankchart.domain.kobis.constants.KobisConstants;
 import movierankchart.domain.kobis.dto.KobisBoxOfficeResponseDto;
 import movierankchart.domain.movierank.constants.MovieRankType;
-import movierankchart.domain.movierank.dto.FindMovieRankResponseDto;
+import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDto;
 import movierankchart.domain.movies.entity.Movies;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 public class MovieRank extends AuditEntity {
     @EmbeddedId
     protected MovieRankId movieRankId;
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movies_id")
     protected Movies movies;
     @Embedded
@@ -39,7 +39,7 @@ public class MovieRank extends AuditEntity {
         return movieRank;
     }
 
-    public FindMovieRankResponseDto toFindMovieRankResponseDto() {
-        return new FindMovieRankResponseDto(movieRankStatistics.isNewRank(), movieRankId.getRank(), movieRankStatistics.getRankIncrement(), movieRankStatistics.getAudienceCount(), movies.getTitle(), movies.getPoster(), movies.getOpeningDate());
+    public FindMovieRankTopTenResponseDto toFindMovieRankTopTenResponseDto() {
+        return new FindMovieRankTopTenResponseDto(movieRankStatistics.isNewRank(), movieRankId.getRank(), movieRankStatistics.getRankIncrement(), movieRankStatistics.getAudienceCount(), movies.getTitle(), movies.getPoster(), movies.getOpeningDate());
     }
 }

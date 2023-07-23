@@ -25,7 +25,7 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_전체일간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "TOTAL_DAILY"));
 
         // then
@@ -35,7 +35,7 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_한국일간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "KOREAN_DAILY"));
 
         // then
@@ -45,7 +45,7 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_해외일간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "FOREIGN_DAILY"));
 
         // then
@@ -55,7 +55,7 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_전체주간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "TOTAL_WEEKLY"));
 
         // then
@@ -65,7 +65,7 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_한국주간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "KOREAN_WEEKLY"));
 
         // then
@@ -75,8 +75,18 @@ class MovieRankControllerSuccessTest {
     @Test
     void TOP_10_해외주간_영화순위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank").param("date", "20230710")
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/top-ten").param("date", "20230710")
                 .param("movieRankType", "FOREIGN_WEEKLY"));
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void 라인차트_데이터_조회_성공() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/line-chart").param("startDate", "20230710")
+                        .param("endDate", "20230710"));
 
         // then
         resultActions.andExpect(status().isOk());

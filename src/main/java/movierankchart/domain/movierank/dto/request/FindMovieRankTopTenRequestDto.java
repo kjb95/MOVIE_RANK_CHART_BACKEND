@@ -1,4 +1,4 @@
-package movierankchart.domain.movierank.dto;
+package movierankchart.domain.movierank.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class FindMovieRequestDto {
+public class FindMovieRankTopTenRequestDto {
     @DateTimeFormat(pattern = "yyyyMMdd")
     @NotNull
     private LocalDate date;

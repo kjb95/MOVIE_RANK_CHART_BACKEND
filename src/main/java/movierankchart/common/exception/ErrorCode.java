@@ -10,6 +10,7 @@ public enum ErrorCode {
     MISSING_SERVLET_REQUEST_PARAMETER_EXCEPTION("/errors/missing-servlet-request-parameter", "클라이언트 요청의 필수 파라미터 누락", 400),
     NO_SUCH_ELEMENT_EXCEPTION("/errors/no-such-element", "찾으려는 데이터가 존재하지 않음", 404),
     BIND_EXCEPTION("errors/bind","바인딩 실패", 400),
+    ILLEGAL_ARGUMENT_EXCEPTION("/errors/illegal-argument", "유효하지 않은 메소드의 인자", 400),
 
     UNCAUGHT_RUNTIME_EXCEPTION("/errors/uncaught/runtime-exception", "catch 하지 못한 RuntimeException", 400),
     UNCAUGHT_EXCEPTION("/errors/uncaught/exception", "catch 하지 못한 Exception", 400);

@@ -40,6 +40,12 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBindException(IllegalArgumentException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
+        ErrorCode errorCode = ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION;
+        return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
         ErrorCode errorCode = ErrorCode.UNCAUGHT_RUNTIME_EXCEPTION;

@@ -2,12 +2,13 @@ package movierankchart.domain.movierank.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import movierankchart.domain.movierank.dto.FindMovieRankResponseDtos;
-import movierankchart.domain.movierank.dto.FindMovieRequestDto;
+import movierankchart.domain.movierank.dto.request.FindMovieRankLineChartRequestDto;
+import movierankchart.domain.movierank.dto.request.FindMovieRankTopTenRequestDto;
+import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDtos;
+import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDtos;
 import movierankchart.domain.movierank.service.MovieRankService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,18 @@ public class MovieRankController {
     private final MovieRankService movieRankService;
 
     @Operation(summary = "영화 순위 TOP 10에 필요한 데이터 조회")
-    @GetMapping
-    public ResponseEntity<FindMovieRankResponseDtos> findMovieRank(@Valid @ModelAttribute FindMovieRequestDto findMovieRequestDto) {
-        FindMovieRankResponseDtos findMovieRankResponseDtos = movieRankService.findMovieRank(findMovieRequestDto);
-        return ResponseEntity.ok(findMovieRankResponseDtos);
+    @GetMapping("/top-ten")
+    public ResponseEntity<FindMovieRankTopTenResponseDtos> findMovieRankTopTen(@Valid FindMovieRankTopTenRequestDto findMovieRankTopTenRequestDto) {
+        FindMovieRankTopTenResponseDtos findMovieRankTopTenResponseDtos = movieRankService.findMovieRankTopTen(findMovieRankTopTenRequestDto);
+        return ResponseEntity.ok(findMovieRankTopTenResponseDtos);
     }
+
+        @Operation(summary = "라인 차트에 필요한 데이터 조회")
+        @GetMapping("/line-chart")
+        public ResponseEntity<FindMovieRankLineChartResponseDtos> findMovieRankLineChart(@Valid FindMovieRankLineChartRequestDto findMovieRankLineChartRequestDto) {
+            FindMovieRankLineChartResponseDtos findMovieRankLineChartResponseDtos = movieRankService.findMovieRankLineChart(findMovieRankLineChartRequestDto);
+            return ResponseEntity.ok(findMovieRankLineChartResponseDtos);
+        }
+
 
 }
