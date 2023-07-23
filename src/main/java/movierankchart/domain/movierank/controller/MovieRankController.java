@@ -3,8 +3,10 @@ package movierankchart.domain.movierank.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import movierankchart.domain.movierank.dto.request.FindMovieRankLineChartRequestDto;
+import movierankchart.domain.movierank.dto.request.FindMovieRankPieChartRequestDto;
 import movierankchart.domain.movierank.dto.request.FindMovieRankTopTenRequestDto;
 import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDtos;
+import movierankchart.domain.movierank.dto.response.FindMovieRankPieChartResponseDtos;
 import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDtos;
 import movierankchart.domain.movierank.service.MovieRankService;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +42,12 @@ public class MovieRankController {
     public ResponseEntity<FindMovieRankLineChartResponseDtos> findMovieRankLineChartByMoviesId(@PathVariable long moviesId) {
         FindMovieRankLineChartResponseDtos movieRankLineChartByMoviesId = movieRankService.findMovieRankLineChartByMoviesId(moviesId);
         return ResponseEntity.ok(movieRankLineChartByMoviesId);
+    }
+
+    @Operation(summary = "파이차트에 필요한 데이터 조회")
+    @GetMapping("/pie-chart")
+    public ResponseEntity<FindMovieRankPieChartResponseDtos> findMovieRankPieChart(@Valid FindMovieRankPieChartRequestDto findMovieRankPieChartRequestDto) {
+        FindMovieRankPieChartResponseDtos findMovieRankPieChartResponseDtos = movieRankService.findMovieRankPieChart(findMovieRankPieChartRequestDto);
+        return ResponseEntity.ok(findMovieRankPieChartResponseDtos);
     }
 }

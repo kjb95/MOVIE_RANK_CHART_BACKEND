@@ -1,27 +1,28 @@
 package movierankchart.domain.movierank.service;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchErrorMessage;
-import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.constants.MovieRankConstants;
 import movierankchart.domain.movierank.constants.MovieRankErrorMessage;
 import movierankchart.domain.movierank.constants.MovieRankType;
+import movierankchart.domain.movierank.domain.LineChartDatas;
+import movierankchart.domain.movierank.domain.PieChartData;
 import movierankchart.domain.movierank.dto.request.FindMovieRankLineChartRequestDto;
+import movierankchart.domain.movierank.dto.request.FindMovieRankPieChartRequestDto;
 import movierankchart.domain.movierank.dto.request.FindMovieRankTopTenRequestDto;
-import movierankchart.domain.movierank.dto.response.*;
+import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDtos;
+import movierankchart.domain.movierank.dto.response.FindMovieRankPieChartResponseDtos;
+import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDto;
+import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseDtos;
 import movierankchart.domain.movierank.entity.MovieRank;
-import movierankchart.domain.movierank.entity.MovieRankStatistics;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -123,92 +124,14 @@ public class MovieRankService {
         return lineChartDatas.toFindMovieRankLineChartResponseDtos();
     }
 
-    @Getter
-    public class LineChartDatas {
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private LineChartData rank;
-        private LineChartData audienceCount;
-        private LineChartData sales;
-        private LineChartData screeningsCount;
-        private LineChartData theatersCount;
-
-        public LineChartDatas(List<MovieRank> movieRanks, LocalDate startDate, LocalDate endDate) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-            rank = new LineChartData(startDate, endDate);
-            audienceCount = new LineChartData(startDate, endDate);
-            sales = new LineChartData(startDate, endDate);
-            screeningsCount = new LineChartData(startDate, endDate);
-            theatersCount = new LineChartData(startDate, endDate);
-            movieRanks.forEach(this::putLineChartData);
-        }
-
-        private void putLineChartData(MovieRank movieRank) {
-            if (movieRank.getMovies() == null) {
-                return;
-            }
-            String title = movieRank.getMovies()
-                    .getTitle();
-            LocalDate date = movieRank.getMovieRankId()
-                    .getDate();
-            long rankData = movieRank.getMovieRankId()
-                    .getRank();
-            MovieRankStatistics movieRankStatistics = movieRank.getMovieRankStatistics();
-            Long audienceCountData = movieRankStatistics.getAudienceCount();
-            Long screeningsCountData = movieRankStatistics.getScreeningsCount();
-            Long salesData = movieRankStatistics.getSales();
-            Long theatersCountData = movieRankStatistics.getTheatersCount();
-            putLineChartData(rank, title, date, rankData);
-            putLineChartData(audienceCount, title, date, audienceCountData);
-            putLineChartData(sales, title, date, salesData);
-            putLineChartData(screeningsCount, title, date, screeningsCountData);
-            putLineChartData(theatersCount, title, date, theatersCountData);
-        }
-
-        private void putLineChartData(LineChartData lineChartData, String title, LocalDate date, Long data) {
-            Map<LocalDate, Long> dateToData = lineChartData.movieTitleToDateToData.computeIfAbsent(title, key -> new HashMap<>());
-            dateToData.put(date, data);
-        }
-
-        public FindMovieRankLineChartResponseDtos toFindMovieRankLineChartResponseDtos() {
-            LocalDate[] dates = DateUtils.getLocalDatesInRange(startDate, endDate)
-                    .toArray(new LocalDate[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)]);
-            return new FindMovieRankLineChartResponseDtos(dates, rank.toFindMovieRankLineChartResponseDtos(), audienceCount.toFindMovieRankLineChartResponseDtos(), sales.toFindMovieRankLineChartResponseDtos(), screeningsCount.toFindMovieRankLineChartResponseDtos(), theatersCount.toFindMovieRankLineChartResponseDtos());
-        }
+    public FindMovieRankPieChartResponseDtos findMovieRankPieChart(FindMovieRankPieChartRequestDto findMovieRankPieChartRequestDto) {
+        LocalDate startDate = findMovieRankPieChartRequestDto.getStartDate();
+        LocalDate endDate = findMovieRankPieChartRequestDto.getEndDate();
+        validateDate(startDate, endDate);
+        List<MovieRank> movieRanks = movieRankRepository.findMovieRankByDate(startDate, endDate);
+        PieChartData pieChartData = new PieChartData(movieRanks);
+        return pieChartData.toFindMovieRankPieChartResponseDtos();
     }
 
-    @Getter
-    public class LineChartData {
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private Map<String, Map<LocalDate, Long>> movieTitleToDateToData = new HashMap<>();
 
-        public LineChartData(LocalDate startDate, LocalDate endDate) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-        }
-
-        public List<FindMovieRankLineChartResponseDto> toFindMovieRankLineChartResponseDtos() {
-            return movieTitleToDateToData.entrySet()
-                    .stream()
-                    .map(this::createFindMovieRankLineChartResponseDto)
-                    .collect(Collectors.toList());
-        }
-
-        private FindMovieRankLineChartResponseDto createFindMovieRankLineChartResponseDto(Map.Entry<String, Map<LocalDate, Long>> movieTitleToDateToDataEntry) {
-            String movieTitle = movieTitleToDateToDataEntry.getKey();
-            long[] datas = new long[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)];
-            movieTitleToDateToDataEntry.getValue()
-                    .entrySet()
-                    .forEach(dateToDataEntry -> fillDataArray(datas, dateToDataEntry));
-            return new FindMovieRankLineChartResponseDto(movieTitle, datas);
-        }
-
-        private void fillDataArray(long[] datas, Map.Entry<LocalDate, Long> dateToDataEntry) {
-            LocalDate date = dateToDataEntry.getKey();
-            int index = (int) ChronoUnit.DAYS.between(startDate, date);
-            datas[index] = dateToDataEntry.getValue();
-        }
-    }
 }

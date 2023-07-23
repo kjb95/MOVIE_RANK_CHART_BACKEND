@@ -100,4 +100,14 @@ class MovieRankControllerSuccessTest {
         // then
         resultActions.andExpect(status().isOk());
     }
+
+    @Test
+    void 파이차트에_필요한_데이터_조회_성공() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "20230701")
+                .param("endDate", "20230708"));
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
 }

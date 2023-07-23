@@ -165,4 +165,72 @@ class MovieRankControllerFailTest {
         // then
         resultActions.andExpect(status().isBadRequest());
     }
+
+    @Test
+    void 파이차트에_필요한_데이터_조회시_시작날짜가_유효하지_않은_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "202306011")
+                .param("endDate", "20230631"));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 파이차트에_필요한_데이터_조회시_마지막날짜가_유효하지_않은_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "20230601")
+                .param("endDate", "20230631a"));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 파이차트_데이터_조회시_시작날짜가_마지막날짜_보다_늦은_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "20230711")
+                .param("endDate", "20230710"));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 파이차트_데이터_조회시_시작날짜가_없는_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("endDate", "20230710"));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 파이차트_데이터_조회시_마지막날짜가_없는_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "20230710"));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 파이차트_데이터_조회시_시작날짜에_데이터가_없는_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "10230710")
+                .param("endDate", "20230710"));
+
+        // then
+        resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    void 파이차트_데이터_조회시_마지막날짜에_데이터가_없는_예외() throws Exception {
+        // when
+        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/pie-chart").param("startDate", "20230710")
+                .param("endDate", "30230710"));
+
+        // then
+        resultActions.andExpect(status().isNotFound());
+    }
 }
