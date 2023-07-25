@@ -20,6 +20,12 @@ public class Users extends AuditEntity {
     @Column(nullable = false)
     private String nickname;
 
+    public static Users createUsers(String nickname) {
+        Users users = new Users();
+        users.nickname = nickname;
+        return users;
+    }
+
     public FindUsersInChatRoomResponseDto toFindUsersInChatRoomResponseDto() {
         return new FindUsersInChatRoomResponseDto(usersId, nickname);
     }

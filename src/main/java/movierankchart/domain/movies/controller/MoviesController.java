@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/movies")
@@ -18,7 +20,7 @@ public class MoviesController {
 
     @Operation(summary = "영화명으로 영화 조회")
     @GetMapping
-    public ResponseEntity<FindMoviesByMovieTitleResponseDtos> findMoviesByMovieTitle(FindMoviesByMovieTitleRequestDto findMoviesByMovieTitleRequestDto) {
+    public ResponseEntity<FindMoviesByMovieTitleResponseDtos> findMoviesByMovieTitle(@Valid FindMoviesByMovieTitleRequestDto findMoviesByMovieTitleRequestDto) {
         FindMoviesByMovieTitleResponseDtos findMoviesByMovieTitleResponseDtos = moviesService.findMoviesByMovieTitle(findMoviesByMovieTitleRequestDto);
         return ResponseEntity.ok(findMoviesByMovieTitleResponseDtos);
     }

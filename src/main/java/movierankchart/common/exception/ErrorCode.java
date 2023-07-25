@@ -11,6 +11,7 @@ public enum ErrorCode {
     NO_SUCH_ELEMENT_EXCEPTION("/errors/no-such-element", "찾으려는 데이터가 존재하지 않음", 404),
     BIND_EXCEPTION("errors/bind","바인딩 실패", 400),
     ILLEGAL_ARGUMENT_EXCEPTION("/errors/illegal-argument", "유효하지 않은 메소드의 인자", 400),
+    DATA_INTEGRITY_VIOLATION_EXCEPTION("/errors/data-integrity-violation", "데이터 무결성 위반", 422),
 
     UNCAUGHT_RUNTIME_EXCEPTION("/errors/uncaught/runtime-exception", "catch 하지 못한 RuntimeException", 400),
     UNCAUGHT_EXCEPTION("/errors/uncaught/exception", "catch 하지 못한 Exception", 400);

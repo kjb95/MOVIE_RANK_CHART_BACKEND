@@ -16,12 +16,12 @@ public class KmdbServiceFailTest {
     }
 
     @Test
-    void KMDB_OPEN_API_키값을_주입해_주지_않아서_예외_발생() {
+    void KMDB_OPEN_API_키값을_주입해_주지_않을경우_예외() {
         // given
         String title = "귀공자";
 
         // then
-        Assertions.assertThatThrownBy(() -> kmdbService.findMovieDetail(title, "", ""))
-                .isInstanceOf(RuntimeException.class);
+        Assertions.assertThat(kmdbService.findMovieDetail(title, "", ""))
+                .isNull();
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -28,42 +28,57 @@ public class LineChartService {
     public FindMovieRankLineChartResponseDtos toFindMovieRankLineChartResponseDtos(List<MovieRank> movieRanks, LocalDate startDate, LocalDate endDate) {
         LocalDate[] dates = DateUtils.getLocalDatesInRange(startDate, endDate)
                 .toArray(new LocalDate[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)]);
-        List<FindMovieRankLineChartResponseDto> rank = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, createNewLineChartDataListRank());
-        List<FindMovieRankLineChartResponseDto> audienceCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, createNewLineChartDataListAudienceCount());
-        List<FindMovieRankLineChartResponseDto> sales = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, createNewLineChartDataListSales());
-        List<FindMovieRankLineChartResponseDto> screeningsCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, createNewLineChartDataListScreeningsCount());
-        List<FindMovieRankLineChartResponseDto> theatersCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, createNewLineChartDataListTheatersCount());
+        List<FindMovieRankLineChartResponseDto> rank = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, this::createNewLineChartDataListRank);
+        List<FindMovieRankLineChartResponseDto> audienceCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, this::createNewLineChartDataListAudienceCount);
+        List<FindMovieRankLineChartResponseDto> sales = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, this::createNewLineChartDataListSales);
+        List<FindMovieRankLineChartResponseDto> screeningsCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, this::createNewLineChartDataListScreeningsCount);
+        List<FindMovieRankLineChartResponseDto> theatersCount = createFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate, this::createNewLineChartDataListTheatersCount);
         return new FindMovieRankLineChartResponseDtos(dates, rank, audienceCount, sales, screeningsCount, theatersCount);
     }
 
-    private Function<MovieRank, List<LineChartData>> createNewLineChartDataListRank() {
-        return movieRank -> Arrays.asList(new LineChartData(movieRank.getMovieRankId()
+    private List<LineChartData> createNewLineChartDataListRank(MovieRank movieRank) {
+        ArrayList<LineChartData> list = new ArrayList<>();
+        LineChartData lineChartData = new LineChartData(movieRank.getMovieRankId()
                 .getDate(), movieRank.getMovieRankId()
-                .getRank()));
+                .getRank());
+        list.add(lineChartData);
+        return list;
     }
 
-    private Function<MovieRank, List<LineChartData>> createNewLineChartDataListSales() {
-        return movieRank -> Arrays.asList(new LineChartData(movieRank.getMovieRankId()
+    private List<LineChartData> createNewLineChartDataListSales(MovieRank movieRank) {
+        ArrayList<LineChartData> list = new ArrayList<>();
+        LineChartData lineChartData = new LineChartData(movieRank.getMovieRankId()
                 .getDate(), movieRank.getMovieRankStatistics()
-                .getSales()));
+                .getSales());
+        list.add(lineChartData);
+        return list;
     }
 
-    private Function<MovieRank, List<LineChartData>> createNewLineChartDataListAudienceCount() {
-        return movieRank -> Arrays.asList(new LineChartData(movieRank.getMovieRankId()
+    private List<LineChartData> createNewLineChartDataListAudienceCount(MovieRank movieRank) {
+        ArrayList<LineChartData> list = new ArrayList<>();
+        LineChartData lineChartData = new LineChartData(movieRank.getMovieRankId()
                 .getDate(), movieRank.getMovieRankStatistics()
-                .getAudienceCount()));
+                .getAudienceCount());
+        list.add(lineChartData);
+        return list;
     }
 
-    private Function<MovieRank, List<LineChartData>> createNewLineChartDataListScreeningsCount() {
-        return movieRank -> Arrays.asList(new LineChartData(movieRank.getMovieRankId()
+    private List<LineChartData> createNewLineChartDataListScreeningsCount(MovieRank movieRank) {
+        ArrayList<LineChartData> list = new ArrayList<>();
+        LineChartData lineChartData = new LineChartData(movieRank.getMovieRankId()
                 .getDate(), movieRank.getMovieRankStatistics()
-                .getScreeningsCount()));
+                .getScreeningsCount());
+        list.add(lineChartData);
+        return list;
     }
 
-    private Function<MovieRank, List<LineChartData>> createNewLineChartDataListTheatersCount() {
-        return movieRank -> Arrays.asList(new LineChartData(movieRank.getMovieRankId()
+    private List<LineChartData> createNewLineChartDataListTheatersCount(MovieRank movieRank) {
+        ArrayList<LineChartData> list = new ArrayList<>();
+        LineChartData lineChartData = new LineChartData(movieRank.getMovieRankId()
                 .getDate(), movieRank.getMovieRankStatistics()
-                .getTheatersCount()));
+                .getTheatersCount());
+        list.add(lineChartData);
+        return list;
     }
 
 

@@ -10,4 +10,5 @@ import java.util.List;
 public interface UsersRepository extends JpaRepository<Users, Long> {
     Long countUsersByMovies_MoviesId(long moviesId);
     List<Users> findUsersByMovies_MoviesId(long moviesId);
+    boolean existsUsersByNickname(String nickname);
 }

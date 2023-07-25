@@ -1,5 +1,6 @@
 package movierankchart.common.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -44,6 +45,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleBindException(IllegalArgumentException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
         ErrorCode errorCode = ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION;
         return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
+        ErrorCode errorCode = ErrorCode.DATA_INTEGRITY_VIOLATION_EXCEPTION;
+        return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(RuntimeException.class)

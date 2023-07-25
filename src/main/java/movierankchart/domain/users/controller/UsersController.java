@@ -3,12 +3,13 @@ package movierankchart.domain.users.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import movierankchart.domain.users.dto.request.FindUsersInChatRoomRequestDto;
+import movierankchart.domain.users.dto.response.CreateUserRequestDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
 import movierankchart.domain.users.service.UsersService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,9 +19,16 @@ public class UsersController {
 
     @Operation(summary = "채팅방에 속한 유저 조회")
     @GetMapping
-    public ResponseEntity<FindUsersInChatRoomResponseDtos> findUsersInChatRoom(FindUsersInChatRoomRequestDto findUsersInChatRoomRequestDto) {
+    public ResponseEntity<FindUsersInChatRoomResponseDtos> findUsersInChatRoom(@Valid FindUsersInChatRoomRequestDto findUsersInChatRoomRequestDto) {
         FindUsersInChatRoomResponseDtos findUsersInChatRoomResponseDtos = usersService.findUsersInChatRoom(findUsersInChatRoomRequestDto);
         return ResponseEntity.ok(findUsersInChatRoomResponseDtos);
     }
 
+    @Operation(summary = "회원가입")
+    @PostMapping
+    public ResponseEntity<Void> createUser(@Valid @RequestBody CreateUserRequestDto createUserRequestDto) {
+        usersService.createUser(createUserRequestDto);
+        return ResponseEntity.ok()
+                .build();
+    }
 }
