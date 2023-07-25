@@ -3,6 +3,7 @@ package movierankchart.domain.users.entity;
 import lombok.*;
 import movierankchart.common.entity.AuditEntity;
 import movierankchart.domain.movies.entity.Movies;
+import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDto;
 
 import javax.persistence.*;
 
@@ -18,4 +19,8 @@ public class Users extends AuditEntity {
     private Movies movies;
     @Column(nullable = false)
     private String nickname;
+
+    public FindUsersInChatRoomResponseDto toFindUsersInChatRoomResponseDto() {
+        return new FindUsersInChatRoomResponseDto(usersId, nickname);
+    }
 }
