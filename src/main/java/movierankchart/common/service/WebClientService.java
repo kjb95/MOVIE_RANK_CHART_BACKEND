@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,7 +34,7 @@ public class WebClientService {
         try {
             return objectMapper.readValue(jsonData, responseDto);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JsonParseException(e);
         }
     }
 }

@@ -40,7 +40,7 @@ public class SaveMovieRankPastJobListener {
         if (jobExecution.getStatus() != BatchStatus.COMPLETED) {
             return;
         }
-        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate, startDate.plusDays(BatchConstants.DAILY_API_CALLS - 1));
+        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate.minusDays(7), startDate.minusDays(7).plusDays(BatchConstants.DAILY_API_CALLS - 1));
         boolean hasInvalidMovieRankData = movieRankService.hasInvalidMovieRankData(datesInRange);
         if (hasInvalidMovieRankData) {
             log.error(BatchErrorMessage.INVALID_MOVIE_RANK_DATA);

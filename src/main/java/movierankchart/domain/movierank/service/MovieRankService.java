@@ -6,8 +6,6 @@ import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryR
 import movierankchart.domain.movierank.constants.MovieRankConstants;
 import movierankchart.domain.movierank.constants.MovieRankErrorMessage;
 import movierankchart.domain.movierank.constants.MovieRankType;
-import movierankchart.domain.movierank.domain.LineChartDatas;
-import movierankchart.domain.movierank.domain.PieChartData;
 import movierankchart.domain.movierank.dto.request.FindMovieRankLineChartRequestDto;
 import movierankchart.domain.movierank.dto.request.FindMovieRankPieChartRequestDto;
 import movierankchart.domain.movierank.dto.request.FindMovieRankTopTenRequestDto;
@@ -31,6 +29,8 @@ import java.util.stream.Collectors;
 public class MovieRankService {
     private final MovieRankRepository movieRankRepository;
     private final MovieOpenApiHistoryRepository movieOpenApiHistoryRepository;
+    private final PieChartService pieChartService;
+    private final LineChartService lineChartService;
 
     public boolean hasInvalidMovieRankData(List<LocalDate> datesInRange) {
         return hasInvalidMovieRankDailyData(datesInRange) || hasInvalidMovieRankWeeklyData(datesInRange);
@@ -89,8 +89,7 @@ public class MovieRankService {
         LocalDate endDate = findMovieRankLineChartRequestDto.getEndDate();
         validateDate(startDate, endDate);
         List<MovieRank> movieRanks = movieRankRepository.findMovieRankByDate(startDate, endDate);
-        LineChartDatas lineChartDatas = new LineChartDatas(movieRanks, startDate, endDate);
-        return lineChartDatas.toFindMovieRankLineChartResponseDtos();
+        return lineChartService.toFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate);
     }
 
     private void validateDate(LocalDate startDate, LocalDate endDate) {
@@ -120,8 +119,7 @@ public class MovieRankService {
         LocalDate endDate = movieRanks.get(movieRanks.size() - 1)
                 .getMovieRankId()
                 .getDate();
-        LineChartDatas lineChartDatas = new LineChartDatas(movieRanks, startDate, endDate);
-        return lineChartDatas.toFindMovieRankLineChartResponseDtos();
+        return lineChartService.toFindMovieRankLineChartResponseDtos(movieRanks, startDate, endDate);
     }
 
     public FindMovieRankPieChartResponseDtos findMovieRankPieChart(FindMovieRankPieChartRequestDto findMovieRankPieChartRequestDto) {
@@ -129,9 +127,6 @@ public class MovieRankService {
         LocalDate endDate = findMovieRankPieChartRequestDto.getEndDate();
         validateDate(startDate, endDate);
         List<MovieRank> movieRanks = movieRankRepository.findMovieRankByDate(startDate, endDate);
-        PieChartData pieChartData = new PieChartData(movieRanks);
-        return pieChartData.toFindMovieRankPieChartResponseDtos();
+        return pieChartService.toFindMovieRankPieChartResponseDtos(movieRanks);
     }
-
-
 }

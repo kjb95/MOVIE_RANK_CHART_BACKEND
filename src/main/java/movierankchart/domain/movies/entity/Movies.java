@@ -8,6 +8,7 @@ import movierankchart.common.utils.StringUtils;
 import movierankchart.domain.kmdb.constants.KmdbConstants;
 import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import movierankchart.domain.kobis.constants.KobisConstants;
+import movierankchart.domain.movies.dto.response.FindMoviesByMovieTitleResponseDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,5 +62,9 @@ public class Movies extends AuditEntity {
                 .replace("!HE", "")
                 .replaceAll("\\s+", " ")
                 .trim();
+    }
+
+    public FindMoviesByMovieTitleResponseDto toFindMoviesByMovieTitleResponseDto(int chatRoomCount) {
+        return new FindMoviesByMovieTitleResponseDto(moviesId, title, openingDate, poster, genre, nation, company, runtime, ratingGrade, chatRoomCount);
     }
 }

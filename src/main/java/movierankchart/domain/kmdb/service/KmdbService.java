@@ -1,11 +1,13 @@
 package movierankchart.domain.kmdb.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import movierankchart.common.service.WebClientService;
 import movierankchart.domain.kmdb.constants.KmdbConstants;
 import movierankchart.domain.kmdb.dto.KmdbMovieDetailResponseDto;
 import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KmdbService {
 
     @Value("${kmdb.api.key}")
@@ -23,7 +26,15 @@ public class KmdbService {
 
     public KmdbResultResponseDto findMovieDetail(String title, String movieCd, String openDt) {
         MultiValueMap<String, String> params = createParams(title);
-        KmdbMovieDetailResponseDto kmdbMovieDetailResponseDto = webClientService.get(KmdbConstants.BASE_URL, "", params, KmdbMovieDetailResponseDto.class);
+        KmdbMovieDetailResponseDto kmdbMovieDetailResponseDto;
+        try {
+            kmdbMovieDetailResponseDto = webClientService.get(KmdbConstants.BASE_URL, "", params, KmdbMovieDetailResponseDto.class);
+        } catch (JsonParseException e) {
+            log.error(e.getMessage());
+            log.error(e.getCause()
+                    .getMessage());
+            return null;
+        }
         List<KmdbResultResponseDto> results = kmdbMovieDetailResponseDto.getData()
                 .get(0)
                 .getResult();
