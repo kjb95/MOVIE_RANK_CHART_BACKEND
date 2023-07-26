@@ -2,7 +2,9 @@ package movierankchart.domain.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import movierankchart.batch.scheduler.SaveMovieRankScheduler;
+import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
 import movierankchart.domain.users.dto.response.CreateUserRequestDto;
+import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -72,12 +73,44 @@ public class UsersControllerFailTest {
         CreateUserRequestDto requestBody = new CreateUserRequestDto("jinbkim");
 
         // when
-        ResultActions resultActions1 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestBody)));
-        ResultActions resultActions2 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestBody)));
+        ResultActions resultActions1 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)));
+        ResultActions resultActions2 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)));
 
         // then
         resultActions2.andExpect(status().isUnprocessableEntity());
         resultActions1.andExpect(status().isOk());
+    }
 
+    @Test
+    void 유저의_채팅방_입장시_존재하지않은_유저아이디_값_예외() throws Exception {
+        // given
+        UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(58480L);
+
+        // when
+        ResultActions resultActions = mvc.perform(patch("/v1/users/999999").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserChatRoomRequestDto)));
+
+        // then
+        resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    void 유저의_채팅방_입장시_존재하지않는_채팅방아이디_값_예외() throws Exception {
+        // given
+        CreateUserRequestDto createUserRequestDto = new CreateUserRequestDto("jinbkim");
+        mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createUserRequestDto)));
+        Users users = usersRepository.findUsersByNickname("jinbkim")
+                .get();
+        UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(999999L);
+
+        // when
+        ResultActions resultActions = mvc.perform(patch("/v1/users/"+users.getUsersId()).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateUserChatRoomRequestDto)));
+
+        // then
+        resultActions.andExpect(status().isNotFound());
     }
 }

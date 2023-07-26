@@ -16,6 +16,7 @@ import movierankchart.domain.movierank.dto.response.FindMovieRankTopTenResponseD
 import movierankchart.domain.movierank.entity.MovieRank;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class MovieRankService {
     private final MovieRankRepository movieRankRepository;
     private final MovieOpenApiHistoryRepository movieOpenApiHistoryRepository;

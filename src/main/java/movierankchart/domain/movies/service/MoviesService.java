@@ -8,12 +8,14 @@ import movierankchart.domain.movies.entity.Movies;
 import movierankchart.domain.movies.repository.MoviesRepository;
 import movierankchart.domain.users.repository.UsersRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MoviesService {
     private final MoviesRepository moviesRepository;
     private final UsersRepository usersRepository;

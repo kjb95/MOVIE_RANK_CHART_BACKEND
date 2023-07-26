@@ -17,7 +17,7 @@ public class Users extends AuditEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movies_id")
     private Movies movies;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     public static Users createUsers(String nickname) {
@@ -28,5 +28,9 @@ public class Users extends AuditEntity {
 
     public FindUsersInChatRoomResponseDto toFindUsersInChatRoomResponseDto() {
         return new FindUsersInChatRoomResponseDto(usersId, nickname);
+    }
+
+    public void setMovies(Movies movies) {
+        this.movies = movies;
     }
 }

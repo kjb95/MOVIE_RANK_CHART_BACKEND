@@ -3,6 +3,7 @@ package movierankchart.domain.users.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import movierankchart.domain.users.dto.request.FindUsersInChatRoomRequestDto;
+import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
 import movierankchart.domain.users.dto.response.CreateUserRequestDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
 import movierankchart.domain.users.service.UsersService;
@@ -31,4 +32,13 @@ public class UsersController {
         return ResponseEntity.ok()
                 .build();
     }
+
+    @Operation(summary = "채팅방에 유저 입장 or 나가기")
+    @PatchMapping("/{usersId}")
+    public ResponseEntity<Void> updateUserChatRoom(@PathVariable Long usersId, @Valid @RequestBody UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto) {
+        usersService.updateUserChatRoom(usersId, updateUserChatRoomRequestDto);
+        return ResponseEntity.ok()
+                .build();
+    }
+
 }
