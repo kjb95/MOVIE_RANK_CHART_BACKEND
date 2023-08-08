@@ -7,12 +7,14 @@ import movierankchart.domain.movies.repository.MoviesRepository;
 import movierankchart.domain.users.costants.UsersErrorMessage;
 import movierankchart.domain.users.dto.request.FindUsersInChatRoomRequestDto;
 import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
-import movierankchart.domain.users.dto.response.CreateUserRequestDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
+import movierankchart.domain.users.dto.response.FindUsersResponseDto;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,19 +43,9 @@ public class UsersService {
     }
 
     @Transactional
-    public void createUser(CreateUserRequestDto createUserRequestDto) {
-        boolean alreadyExistsUsers = usersRepository.existsUsersByNickname(createUserRequestDto.getNickname());
-        if (alreadyExistsUsers) {
-            throw new DataIntegrityViolationException(UsersErrorMessage.EXISTS_USER);
-        }
-        Users users = Users.createUsers(createUserRequestDto.getNickname());
-        usersRepository.save(users);
-    }
-
-    @Transactional
     public void updateUserChatRoom(long usersId, UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto) {
         Users users = usersRepository.findById(usersId)
-                .orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_ID));
         if (updateUserChatRoomRequestDto.getMoviesId() == null) {
             users.setMovies(null);
             return;
@@ -61,5 +53,13 @@ public class UsersService {
         Movies movies = moviesRepository.findById(updateUserChatRoomRequestDto.getMoviesId())
                 .orElseThrow(() -> new NoSuchElementException(MoviesErrorMessage.NOT_FOUND_MOVIES));
         users.setMovies(movies);
+    }
+
+    public FindUsersResponseDto findUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Users users = usersRepository.findUsersByEmail(email).orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_EMAIL));
+        return users.toFindUsersResponseDto();
     }
 }

@@ -22,12 +22,12 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieRank extends AuditEntity {
     @EmbeddedId
-    protected MovieRankId movieRankId;
+    private MovieRankId movieRankId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movies_id")
-    protected Movies movies;
+    private Movies movies;
     @Embedded
-    protected MovieRankStatistics movieRankStatistics;
+    private MovieRankStatistics movieRankStatistics;
 
     public static MovieRank createMovieRank(String showRange, KobisBoxOfficeResponseDto kobisBoxOfficeResponseDto, Movies movies, MovieRankType movieRankType) {
         MovieRank movieRank = new MovieRank();

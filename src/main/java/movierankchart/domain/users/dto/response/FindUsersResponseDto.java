@@ -5,7 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FindUsersInChatRoomResponseDto {
-    private long usersId;
+public class FindUsersResponseDto {
+    private Long usersId;
     private String email;
+    private String name;
+    private String picture;
 }

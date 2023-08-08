@@ -21,9 +21,9 @@ public class MoviesService {
     private final UsersRepository usersRepository;
 
     public FindMoviesByMovieTitleResponseDtos findMoviesByMovieTitle(FindMoviesByMovieTitleRequestDto findMoviesByMovieTitleRequestDto) {
-        boolean considerSomeoneChatroom = findMoviesByMovieTitleRequestDto.getIsConsiderSomeoneChatroom();
+        boolean considerSomeoneChatRoom = findMoviesByMovieTitleRequestDto.getIsConsiderSomeoneChatroom();
         String title = findMoviesByMovieTitleRequestDto.getTitle();
-        List<Movies> moviess = considerSomeoneChatroom ? moviesRepository.findMoviesByTitleContainingSomeoneInChatRoom(title) : moviesRepository.findMoviesByTitleContaining(title);
+        List<Movies> moviess = considerSomeoneChatRoom ? moviesRepository.findMoviesByTitleContainingSomeoneInChatRoom(title) : moviesRepository.findMoviesByTitleContaining(title);
         List<FindMoviesByMovieTitleResponseDto> findMoviesByMovieTitleResponseDtos = moviess.stream()
                 .map(movies -> createFindMoviesByMovieTitleResponseDto(movies))
                 .collect(Collectors.toList());

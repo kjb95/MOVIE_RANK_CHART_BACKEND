@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import movierankchart.domain.users.dto.request.FindUsersInChatRoomRequestDto;
 import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
-import movierankchart.domain.users.dto.response.CreateUserRequestDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
+import movierankchart.domain.users.dto.response.FindUsersResponseDto;
 import movierankchart.domain.users.service.UsersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +19,10 @@ public class UsersController {
     private final UsersService usersService;
 
     @Operation(summary = "채팅방에 속한 유저 조회")
-    @GetMapping
+    @GetMapping("/chatroom")
     public ResponseEntity<FindUsersInChatRoomResponseDtos> findUsersInChatRoom(@Valid FindUsersInChatRoomRequestDto findUsersInChatRoomRequestDto) {
         FindUsersInChatRoomResponseDtos findUsersInChatRoomResponseDtos = usersService.findUsersInChatRoom(findUsersInChatRoomRequestDto);
         return ResponseEntity.ok(findUsersInChatRoomResponseDtos);
-    }
-
-    @Operation(summary = "회원가입")
-    @PostMapping
-    public ResponseEntity<Void> createUser(@Valid @RequestBody CreateUserRequestDto createUserRequestDto) {
-        usersService.createUser(createUserRequestDto);
-        return ResponseEntity.ok()
-                .build();
     }
 
     @Operation(summary = "채팅방에 유저 입장 or 나가기")
@@ -41,4 +33,10 @@ public class UsersController {
                 .build();
     }
 
+    @Operation(summary = "유저 조회")
+    @GetMapping
+    public ResponseEntity<FindUsersResponseDto> findUsers() {
+        FindUsersResponseDto findUsersResponseDto = usersService.findUsers();
+        return ResponseEntity.ok().body(findUsersResponseDto);
+    }
 }

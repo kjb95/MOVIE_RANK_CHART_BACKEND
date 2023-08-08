@@ -28,13 +28,13 @@ public class SaveMovieRankScheduler {
     private final Job saveMovieRankRecentWeeklyJob;
     private final MovieOpenApiHistoryRepository movieOpenApiHistoryRepository;
 
-    @Scheduled(fixedDelay = 900000)
-    public void saveMovieRankPastJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        Map<String, JobParameter> jobParameterMap = new HashMap<>();
-        jobParameterMap.put("currentTime", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(jobParameterMap);
-        jobLauncher.run(saveMovieRankPastJob, jobParameters);
-    }
+//    @Scheduled(fixedDelay = 900000)
+//    public void saveMovieRankPastJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+//        Map<String, JobParameter> jobParameterMap = new HashMap<>();
+//        jobParameterMap.put("currentTime", new JobParameter(System.currentTimeMillis()));
+//        JobParameters jobParameters = new JobParameters(jobParameterMap);
+//        jobLauncher.run(saveMovieRankPastJob, jobParameters);
+//    }
 
     @Scheduled(fixedDelay = 86400000)
     public void saveMovieRankRecentDailyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {

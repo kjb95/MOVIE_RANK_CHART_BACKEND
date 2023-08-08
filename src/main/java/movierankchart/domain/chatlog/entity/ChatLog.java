@@ -13,12 +13,11 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatLog extends AuditEntity {
     @Id
-    @Column
-    private long chatLogId;
+    @GeneratedValue
+    private Long chatLogId;
 
-    @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movies_id", referencedColumnName = "chat_log_id")
+    @JoinColumn(name = "movies_id", unique = true)
     private Movies movies;
 
     @Column(nullable = false)
