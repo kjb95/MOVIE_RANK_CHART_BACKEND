@@ -3,7 +3,6 @@ package movierankchart.domain.users.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import movierankchart.batch.scheduler.SaveMovieRankScheduler;
 import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
-import movierankchart.domain.users.dto.response.CreateUserRequestDto;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
+@WithMockUser
 public class UsersControllerFailTest {
     @Autowired
     private MockMvc mvc;
@@ -59,31 +60,6 @@ public class UsersControllerFailTest {
     }
 
     @Test
-    void 회원가입시_닉네임_파라미터가_존재하지_않는_예외() throws Exception {
-        // when
-        ResultActions resultActions = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void 회원가입시_이미_가입한_유저_예외() throws Exception {
-        // given
-        CreateUserRequestDto requestBody = new CreateUserRequestDto("jinbkim");
-
-        // when
-        ResultActions resultActions1 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)));
-        ResultActions resultActions2 = mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)));
-
-        // then
-        resultActions2.andExpect(status().isUnprocessableEntity());
-        resultActions1.andExpect(status().isOk());
-    }
-
-    @Test
     void 유저의_채팅방_입장시_존재하지않은_유저아이디_값_예외() throws Exception {
         // given
         UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(58480L);
@@ -99,10 +75,9 @@ public class UsersControllerFailTest {
     @Test
     void 유저의_채팅방_입장시_존재하지않는_채팅방아이디_값_예외() throws Exception {
         // given
-        CreateUserRequestDto createUserRequestDto = new CreateUserRequestDto("jinbkim");
-        mvc.perform(post("/v1/users").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createUserRequestDto)));
-        Users users = usersRepository.findUsersByNickname("jinbkim")
+        Users users = Users.createUsers("jinbkim@gmail.com", "kim", "https://lh3.googleusercontent.com/a/AAcHTteXwTOgeOZ7HmG4uvVjfngCXEDOcxPt6JiYq8PGFqVI=s96-c");
+        usersRepository.save(users);
+        users = usersRepository.findUsersByEmail("jinbkim@gmail.com")
                 .get();
         UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(999999L);
 
