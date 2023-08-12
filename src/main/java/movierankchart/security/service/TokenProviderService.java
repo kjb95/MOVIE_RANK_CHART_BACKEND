@@ -1,9 +1,8 @@
 package movierankchart.security.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import movierankchart.security.constants.SecurityConstants;
+import movierankchart.security.constants.TokenStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,16 +36,25 @@ public class TokenProviderService {
                 ).compact();
     }
 
-    public boolean isValidToken(String token) {
+    public TokenStatus isValidToken(String token) {
+        if (token == null) {
+            return TokenStatus.INVALID;
+        }
         try {
             findClaimsByJwt(token);
-            return true;
-        } catch (Exception e) {
-            return false;
+            return TokenStatus.VALID;
+        } catch (ExpiredJwtException e) {
+            return TokenStatus.EXPIRED;
+        }
+        catch (Exception e) {
+            return TokenStatus.INVALID;
         }
     }
 
     public Authentication createAuthentication(String token) {
+        if (isValidToken(token) != TokenStatus.VALID) {
+            return null;
+        }
         Claims claims = findClaimsByJwt(token);
         User user = new User(claims.getSubject(), "", Collections.EMPTY_LIST);
         return new UsernamePasswordAuthenticationToken(user, token, Collections.EMPTY_LIST);
@@ -54,6 +62,16 @@ public class TokenProviderService {
 
     public Claims findClaimsByJwt(String token) {
         return Jwts.parser().setSigningKey(JWT_SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    public String getTokenByRequestHeader(String authorizationHeader) {
+        if (authorizationHeader == null) {
+            return null;
+        }
+        if (!authorizationHeader.startsWith(SecurityConstants.JWT_TOKEN_PREFIX)) {
+            return null;
+        }
+        return authorizationHeader.substring(SecurityConstants.JWT_TOKEN_PREFIX.length());
     }
 
 }

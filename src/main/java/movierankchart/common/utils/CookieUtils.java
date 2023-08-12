@@ -11,4 +11,11 @@ public class CookieUtils {
         cookie.setMaxAge(maxAge);
         httpServletResponse.addCookie(cookie);
     }
+
+    public static void addCookie(HttpServletResponse httpServletResponse, String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        httpServletResponse.addCookie(cookie);
+    }
 }

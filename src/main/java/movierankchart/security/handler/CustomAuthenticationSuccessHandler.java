@@ -5,7 +5,7 @@ import movierankchart.common.utils.CookieUtils;
 import movierankchart.domain.users.costants.UsersErrorMessage;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
-import movierankchart.security.constants.CookieType;
+import movierankchart.security.constants.TokenType;
 import movierankchart.security.constants.SecurityConstants;
 import movierankchart.security.service.RefreshTokenService;
 import movierankchart.security.service.TokenProviderService;
@@ -30,13 +30,13 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Users users = findUsers(authentication);
         // 액세스 토큰, 리프레시 토큰 생성
-        String accessToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(CookieType.ACCESS_TOKEN.getSeconds()));
-        String refreshToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(CookieType.REFRESH_TOKEN.getSeconds()));
+        String accessToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(TokenType.ACCESS_TOKEN.getSeconds()));
+        String refreshToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(TokenType.REFRESH_TOKEN.getSeconds()));
         refreshTokenService.saveToken(users, refreshToken);
         // 응답쿠키에 액세스 토큰, 리프레시 토큰 담기
-        CookieUtils.addCookie(response, CookieType.ACCESS_TOKEN.getName(), accessToken, CookieType.ACCESS_TOKEN.getSeconds());
-        CookieUtils.addCookie(response, CookieType.REFRESH_TOKEN.getName(), refreshToken, CookieType.REFRESH_TOKEN.getSeconds());
-        CookieUtils.addCookie(response, CookieType.AUTHENTICATION_DONE.getName(), CookieType.AUTHENTICATION_DONE.getName(), CookieType.AUTHENTICATION_DONE.getSeconds());
+        CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.getName(), accessToken);
+        CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.getName(), refreshToken);
+        CookieUtils.addCookie(response, TokenType.AUTHENTICATION_DONE.getName(), TokenType.AUTHENTICATION_DONE.getName(), TokenType.AUTHENTICATION_DONE.getSeconds());
     }
 
     private Users findUsers(Authentication authentication) {

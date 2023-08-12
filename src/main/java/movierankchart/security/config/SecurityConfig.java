@@ -23,7 +23,7 @@ public class SecurityConfig {
         // UsernamePasswordAuthenticationFilter 전에 직접 만든 jwtFilter 추가
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests((authorize) -> authorize  //
-                .antMatchers("/v1/login", "/v1/users").authenticated()  // 인증이 필요한 경로 지정
+                .antMatchers("/v1/login").authenticated()  // 인증이 필요한 경로 지정
                 .anyRequest().permitAll()  // 그외 경로는 접근 허용
         );
         http.oauth2Login()  // OAuth2 기반의 로그인

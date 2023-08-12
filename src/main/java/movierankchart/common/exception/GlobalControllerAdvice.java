@@ -3,6 +3,7 @@ package movierankchart.common.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +52,12 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
         ErrorCode errorCode = ErrorCode.DATA_INTEGRITY_VIOLATION_EXCEPTION;
         return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
+        ErrorCode errorCode = ErrorCode.AUTHENTICATION_CREDENTIALS_NOT_FOUND_EXCEPTION;
+        return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(RuntimeException.class)

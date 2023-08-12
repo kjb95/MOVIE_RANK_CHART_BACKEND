@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CookieType {
-    ACCESS_TOKEN("access_token", 3600),
+public enum TokenType {
+    ACCESS_TOKEN("access_token", 600),
     REFRESH_TOKEN("refresh_token", 604800),
     AUTHENTICATION_DONE("authentication_done", 10);
 
