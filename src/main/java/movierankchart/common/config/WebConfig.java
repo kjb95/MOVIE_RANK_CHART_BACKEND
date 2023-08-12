@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // CORS 설정을 적용할 URL 패턴
                 .allowedOrigins("http://localhost:5173")  // CORS 허용하는 Origin
-                .allowedMethods("GET", "POST")  // CORS 허용하는 HTTP Method
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // CORS 허용하는 HTTP Method
                 .allowCredentials(true);  // 쿠키가 포함된 요청 허용
     }
 }

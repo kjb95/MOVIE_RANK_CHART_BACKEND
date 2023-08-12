@@ -20,6 +20,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors();  // CORS 관련 헤더를 응답에 추가
+        http.csrf().disable();  // CSRF 비활성화
         // UsernamePasswordAuthenticationFilter 전에 직접 만든 jwtFilter 추가
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests((authorize) -> authorize  //

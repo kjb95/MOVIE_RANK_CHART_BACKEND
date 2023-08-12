@@ -11,9 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableBatchProcessing
 @SpringBootApplication
 public class MovierankchartApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MovierankchartApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(MovierankchartApplication.class, args);
+    }
 }
