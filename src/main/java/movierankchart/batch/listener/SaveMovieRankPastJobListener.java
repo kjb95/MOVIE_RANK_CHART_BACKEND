@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import movierankchart.batch.constants.BatchConstants;
 import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.common.utils.DateUtils;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import movierankchart.domain.movierank.service.MovieRankService;
@@ -28,8 +29,12 @@ public class SaveMovieRankPastJobListener {
 
     @BeforeJob
     public void beforeJob(JobExecution jobExecution) {
-        startDate = movieOpenApiHistoryRepository.findStartDate()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        startDate = movieOpenApiHistory.getStartDate();
         String dateString = DateUtils.localDateToString(startDate, BatchConstants.YYYYMMDD);
         jobExecution.getExecutionContext()
                 .put(BatchConstants.START_DATE, dateString);
@@ -48,7 +53,13 @@ public class SaveMovieRankPastJobListener {
             return;
         }
         LocalDate minDate = movieRankRepository.findMinDate();
-        movieOpenApiHistoryRepository.updateStartDate(minDate);
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        movieOpenApiHistory.setStartDate(minDate);
+        movieOpenApiHistoryRepository.save(movieOpenApiHistory);
     }
 
 }

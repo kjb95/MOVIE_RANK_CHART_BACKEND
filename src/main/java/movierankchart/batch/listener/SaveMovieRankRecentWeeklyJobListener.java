@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import movierankchart.batch.constants.BatchConstants;
 import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.common.utils.DateUtils;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import movierankchart.domain.movierank.service.MovieRankService;
@@ -28,12 +29,14 @@ public class SaveMovieRankRecentWeeklyJobListener {
 
     @BeforeJob
     public void beforeJob(JobExecution jobExecution) {
-        endDateWeekly = movieOpenApiHistoryRepository.findEndDateWeekly()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY))
-                .plusDays(7);
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        endDateWeekly = movieOpenApiHistory.getEndDateWeekly().plusDays(7);
         String dateString = DateUtils.localDateToString(endDateWeekly, BatchConstants.YYYYMMDD);
-        jobExecution.getExecutionContext()
-                .put(BatchConstants.END_DATE_WEEKLY, dateString);
+        jobExecution.getExecutionContext().put(BatchConstants.END_DATE_WEEKLY, dateString);
     }
 
     @AfterJob
@@ -49,6 +52,12 @@ public class SaveMovieRankRecentWeeklyJobListener {
             return;
         }
         LocalDate endDateWeekly = movieRankRepository.findEaxDateWeekly();
-        movieOpenApiHistoryRepository.updateEndDateWeekly(endDateWeekly);
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        movieOpenApiHistory.setEndDateWeekly(endDateWeekly);
+        movieOpenApiHistoryRepository.save(movieOpenApiHistory);
     }
 }

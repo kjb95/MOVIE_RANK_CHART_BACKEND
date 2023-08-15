@@ -3,6 +3,7 @@ package movierankchart.batch;
 import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.batch.scheduler.SaveMovieRankScheduler;
 import movierankchart.common.utils.DateUtils;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.service.MovieRankService;
 import org.assertj.core.api.Assertions;
@@ -28,17 +29,23 @@ public class MovieRankChartDataTests {
     @Test
     void 영화_순위_데이터가_잘_저장되었는지_확인() {
         // given
-        LocalDate startDate = movieOpenApiHistoryRepository.findStartDate()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
-        LocalDate endDateDaily = movieOpenApiHistoryRepository.findEndDateDaily()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
-        List<LocalDate> datesInRange = DateUtils.getLocalDatesInRange(startDate, endDateDaily);
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        LocalDate startDate = movieOpenApiHistory.getStartDate();
+        LocalDate endDateDaily = movieOpenApiHistory.getEndDateDaily();
+        LocalDate endDateWeekly = movieOpenApiHistory.getEndDateWeekly();
+        List<LocalDate> dailyDatesInRange = DateUtils.getLocalDatesInRange(startDate, endDateDaily);
+        List<LocalDate> weeklyDatesInRange = DateUtils.getLocalDatesInRange(startDate, endDateWeekly);
 
         // when
-        boolean hasInvalidMovieRankData = movieRankService.hasInvalidMovieRankData(datesInRange);
+        boolean hasInvalidMovieRankDailyData = movieRankService.hasInvalidMovieRankDailyData(dailyDatesInRange);
+        boolean hasInvalidMovieRankWeeklyData = movieRankService.hasInvalidMovieRankWeeklyData(weeklyDatesInRange);
 
         // then
-        Assertions.assertThat(hasInvalidMovieRankData)
-                .isEqualTo(false);
+        Assertions.assertThat(hasInvalidMovieRankDailyData).isEqualTo(false);
+        Assertions.assertThat(hasInvalidMovieRankWeeklyData).isEqualTo(false);
     }
 }

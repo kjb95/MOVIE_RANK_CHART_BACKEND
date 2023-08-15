@@ -2,6 +2,7 @@ package movierankchart.batch.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchErrorMessage;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -38,8 +40,12 @@ public class SaveMovieRankScheduler {
 
     @Scheduled(fixedDelay = 86400000)
     public void saveMovieRankRecentDailyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        LocalDate endDateDaily = movieOpenApiHistoryRepository.findEndDateDaily()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        LocalDate endDateDaily = movieOpenApiHistory.getEndDateDaily();
         LocalDate currentDate = LocalDate.now();
         if (ChronoUnit.DAYS.between(endDateDaily, currentDate) == 1) {
             return;
@@ -52,8 +58,12 @@ public class SaveMovieRankScheduler {
 
     @Scheduled(fixedDelay = 604800000)
     public void saveMovieRankRecentWeeklyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        LocalDate endDateWeekly = movieOpenApiHistoryRepository.findEndDateWeekly()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        LocalDate endDateWeekly = movieOpenApiHistory.getEndDateWeekly();
         LocalDate currentDate = LocalDate.now();
         if (ChronoUnit.DAYS.between(endDateWeekly, currentDate) < 14) {
             return;

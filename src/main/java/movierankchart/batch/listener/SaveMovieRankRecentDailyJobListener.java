@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import movierankchart.batch.constants.BatchConstants;
 import movierankchart.batch.constants.BatchErrorMessage;
 import movierankchart.common.utils.DateUtils;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.repository.MovieRankRepository;
 import movierankchart.domain.movierank.service.MovieRankService;
@@ -28,12 +29,14 @@ public class SaveMovieRankRecentDailyJobListener {
 
     @BeforeJob
     public void beforeJob(JobExecution jobExecution) {
-        endDateDaily = movieOpenApiHistoryRepository.findEndDateDaily()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY))
-                .plusDays(1);
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        endDateDaily = movieOpenApiHistory.getEndDateDaily().plusDays(1);
         String dateString = DateUtils.localDateToString(endDateDaily, BatchConstants.YYYYMMDD);
-        jobExecution.getExecutionContext()
-                .put(BatchConstants.END_DATE_DAILY, dateString);
+        jobExecution.getExecutionContext().put(BatchConstants.END_DATE_DAILY, dateString);
     }
 
     @AfterJob
@@ -48,7 +51,13 @@ public class SaveMovieRankRecentDailyJobListener {
             jobExecution.setStatus(BatchStatus.FAILED);
             return;
         }
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
         LocalDate endDateDaily = movieRankRepository.findEndDateDaily();
-        movieOpenApiHistoryRepository.updateEndDateDaily(endDateDaily);
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        movieOpenApiHistory.setEndDateDaily(endDateDaily);
+        movieOpenApiHistoryRepository.save(movieOpenApiHistory);
     }
 }

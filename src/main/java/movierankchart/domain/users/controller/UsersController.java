@@ -40,6 +40,6 @@ public class UsersController {
     public ResponseEntity<FindUsersResponseDto> findUsers() {
         UserDetails userDetails = authenticationService.findUserDetails();
         FindUsersResponseDto findUsersResponseDto = usersService.findUsers(userDetails.getUsername());
-        return ResponseEntity.ok().body(findUsersResponseDto);
+        return ResponseEntity.ok(findUsersResponseDto);
     }
 }

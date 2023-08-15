@@ -12,7 +12,7 @@ public enum ErrorCode {
     BIND_EXCEPTION("errors/bind", "바인딩 실패", 400),
     ILLEGAL_ARGUMENT_EXCEPTION("/errors/illegal-argument", "유효하지 않은 메소드의 인자", 400),
     DATA_INTEGRITY_VIOLATION_EXCEPTION("/errors/data-integrity-violation", "데이터 무결성 위반", 422),
-    AUTHENTICATION_CREDENTIALS_NOT_FOUND_EXCEPTION("/errors/authentication-credentials-not-found", "인증되지 않은 유저", 403),
+    AUTHENTICATION_CREDENTIALS_NOT_FOUND_EXCEPTION("/errors/authentication-credentials-not-found", "인증되지 않은 유저", 401),
 
     UNCAUGHT_RUNTIME_EXCEPTION("/errors/uncaught/runtime-exception", "catch 하지 못한 RuntimeException", 400),
     UNCAUGHT_EXCEPTION("/errors/uncaught/exception", "catch 하지 못한 Exception", 400);

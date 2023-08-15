@@ -2,6 +2,7 @@ package movierankchart.domain.movierank.service;
 
 import lombok.RequiredArgsConstructor;
 import movierankchart.batch.constants.BatchErrorMessage;
+import movierankchart.domain.movieopenapihistory.entity.MovieOpenApiHistory;
 import movierankchart.domain.movieopenapihistory.repository.MovieOpenApiHistoryRepository;
 import movierankchart.domain.movierank.constants.MovieRankConstants;
 import movierankchart.domain.movierank.constants.MovieRankErrorMessage;
@@ -95,10 +96,13 @@ public class MovieRankService {
     }
 
     private void validateDate(LocalDate startDate, LocalDate endDate) {
-        LocalDate startDateInDb = movieOpenApiHistoryRepository.findStartDate()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
-        LocalDate endDateInDb = movieOpenApiHistoryRepository.findEndDateDaily()
-                .orElseThrow(() -> new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY));
+        List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
+        if (movieOpenApiHistories == null) {
+            throw new IllegalArgumentException(BatchErrorMessage.MOVIE_OPEN_API_HISTORY_EMPTY);
+        }
+        MovieOpenApiHistory movieOpenApiHistory = movieOpenApiHistories.get(0);
+        LocalDate startDateInDb = movieOpenApiHistory.getStartDate();
+        LocalDate endDateInDb = movieOpenApiHistory.getEndDateDaily();
         if (startDate.isBefore(startDateInDb) || endDate.isAfter(endDateInDb)) {
             throw new NoSuchElementException(MovieRankErrorMessage.MOVIE_RANK_NOT_FOUND_DATE);
         }

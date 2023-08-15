@@ -57,7 +57,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException e, HttpServletRequest httpServletRequest) throws URISyntaxException {
         ErrorCode errorCode = ErrorCode.AUTHENTICATION_CREDENTIALS_NOT_FOUND_EXCEPTION;
-        return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new ErrorResponse(new URI(errorCode.getType()), errorCode.getTitle(), errorCode.getStatus(), e.getMessage(), new URI(httpServletRequest.getRequestURI())), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(RuntimeException.class)
