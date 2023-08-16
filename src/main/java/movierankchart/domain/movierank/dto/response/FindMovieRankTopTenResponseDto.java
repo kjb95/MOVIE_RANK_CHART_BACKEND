@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 public class FindMovieRankTopTenResponseDto {
+    private long moviesId;
     private boolean isNewRank;
     private int rank;
     private int rankIncrement;

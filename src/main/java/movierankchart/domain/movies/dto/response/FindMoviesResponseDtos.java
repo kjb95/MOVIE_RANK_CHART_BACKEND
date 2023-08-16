@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class FindMoviesByMovieTitleResponseDtos {
-    List<FindMoviesByMovieTitleResponseDto> movies;
+public class FindMoviesResponseDtos {
+    List<FindMoviesResponseDto> movies;
 }

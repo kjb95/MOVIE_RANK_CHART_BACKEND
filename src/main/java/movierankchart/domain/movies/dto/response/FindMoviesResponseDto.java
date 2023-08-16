@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class FindMoviesByMovieTitleResponseDto {
+public class FindMoviesResponseDto {
     private long moviesId;
     private String title;
     private LocalDate openingDate;

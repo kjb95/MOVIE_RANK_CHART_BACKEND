@@ -8,7 +8,7 @@ import movierankchart.common.utils.StringUtils;
 import movierankchart.domain.kmdb.constants.KmdbConstants;
 import movierankchart.domain.kmdb.dto.KmdbResultResponseDto;
 import movierankchart.domain.kobis.constants.KobisConstants;
-import movierankchart.domain.movies.dto.response.FindMoviesByMovieTitleResponseDto;
+import movierankchart.domain.movies.dto.response.FindMoviesResponseDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,7 +64,7 @@ public class Movies extends AuditEntity {
                 .trim();
     }
 
-    public FindMoviesByMovieTitleResponseDto toFindMoviesByMovieTitleResponseDto(int chatRoomCount) {
-        return new FindMoviesByMovieTitleResponseDto(moviesId, title, openingDate, poster, genre, nation, company, runtime, ratingGrade, chatRoomCount);
+    public FindMoviesResponseDto toFindMoviesResponseDto(int chatRoomCount) {
+        return new FindMoviesResponseDto(moviesId, title, openingDate, poster, genre, nation, company, runtime, ratingGrade, chatRoomCount);
     }
 }

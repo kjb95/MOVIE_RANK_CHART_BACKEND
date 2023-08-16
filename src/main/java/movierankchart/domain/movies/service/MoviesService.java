@@ -1,15 +1,17 @@
 package movierankchart.domain.movies.service;
 
 import lombok.RequiredArgsConstructor;
-import movierankchart.domain.movies.dto.request.FindMoviesByMovieTitleRequestDto;
-import movierankchart.domain.movies.dto.response.FindMoviesByMovieTitleResponseDto;
-import movierankchart.domain.movies.dto.response.FindMoviesByMovieTitleResponseDtos;
+import movierankchart.domain.movies.constants.MoviesErrorMessage;
+import movierankchart.domain.movies.dto.request.FindMoviesRequestDto;
+import movierankchart.domain.movies.dto.response.FindMoviesResponseDto;
+import movierankchart.domain.movies.dto.response.FindMoviesResponseDtos;
 import movierankchart.domain.movies.entity.Movies;
 import movierankchart.domain.movies.repository.MoviesRepository;
 import movierankchart.domain.users.repository.UsersRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,18 +22,24 @@ public class MoviesService {
     private final MoviesRepository moviesRepository;
     private final UsersRepository usersRepository;
 
-    public FindMoviesByMovieTitleResponseDtos findMoviesByMovieTitle(FindMoviesByMovieTitleRequestDto findMoviesByMovieTitleRequestDto) {
-        boolean considerSomeoneChatRoom = findMoviesByMovieTitleRequestDto.getIsConsiderSomeoneChatroom();
-        String title = findMoviesByMovieTitleRequestDto.getTitle();
-        List<Movies> moviess = considerSomeoneChatRoom ? moviesRepository.findMoviesByTitleContainingSomeoneInChatRoom(title) : moviesRepository.findMoviesByTitleContaining(title);
-        List<FindMoviesByMovieTitleResponseDto> findMoviesByMovieTitleResponseDtos = moviess.stream()
-                .map(movies -> createFindMoviesByMovieTitleResponseDto(movies))
-                .collect(Collectors.toList());
-        return new FindMoviesByMovieTitleResponseDtos(findMoviesByMovieTitleResponseDtos);
+    public FindMoviesResponseDtos findMoviesById(FindMoviesRequestDto findMoviesRequestDto) {
+        Movies movies = moviesRepository.findById(findMoviesRequestDto.getId()).orElseThrow(() -> new IllegalArgumentException(MoviesErrorMessage.NOT_FOUND_MOVIES));
+        FindMoviesResponseDto findMoviesResponseDto = createFindMoviesResponseDto(movies);
+        return new FindMoviesResponseDtos(Arrays.asList(findMoviesResponseDto));
     }
 
-    private FindMoviesByMovieTitleResponseDto createFindMoviesByMovieTitleResponseDto(Movies movies) {
+    public FindMoviesResponseDtos findMoviesByTitle(FindMoviesRequestDto findMoviesRequestDto) {
+        String title = findMoviesRequestDto.getTitle();
+        boolean considerSomeoneChatRoom = findMoviesRequestDto.getIsConsiderSomeoneChatroom();
+        List<Movies> moviess = considerSomeoneChatRoom ? moviesRepository.findMoviesByTitleContainingSomeoneInChatRoom(title) : moviesRepository.findMoviesByTitleContaining(title);
+        List<FindMoviesResponseDto> findMoviesResponseDtos = moviess.stream()
+                .map(movies -> createFindMoviesResponseDto(movies))
+                .collect(Collectors.toList());
+        return new FindMoviesResponseDtos(findMoviesResponseDtos);
+    }
+
+    private FindMoviesResponseDto createFindMoviesResponseDto(Movies movies) {
         Long chatRoomCount = usersRepository.countUsersByMovies_MoviesId(movies.getMoviesId());
-        return movies.toFindMoviesByMovieTitleResponseDto(chatRoomCount.intValue());
+        return movies.toFindMoviesResponseDto(chatRoomCount.intValue());
     }
 }
