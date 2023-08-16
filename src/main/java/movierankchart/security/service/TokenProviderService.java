@@ -43,8 +43,6 @@ public class TokenProviderService {
         try {
             findClaimsByJwt(token);
             return TokenStatus.VALID;
-        } catch (ExpiredJwtException e) {
-            return TokenStatus.EXPIRED;
         }
         catch (Exception e) {
             return TokenStatus.INVALID;

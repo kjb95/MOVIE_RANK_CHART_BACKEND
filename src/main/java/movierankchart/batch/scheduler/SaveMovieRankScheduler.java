@@ -38,7 +38,7 @@ public class SaveMovieRankScheduler {
 //        jobLauncher.run(saveMovieRankPastJob, jobParameters);
 //    }
 
-    @Scheduled(fixedDelay = 86400000)
+    @Scheduled(fixedDelay = 10800000)
     public void saveMovieRankRecentDailyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
         if (movieOpenApiHistories == null) {
@@ -56,7 +56,7 @@ public class SaveMovieRankScheduler {
         jobLauncher.run(saveMovieRankRecentDailyJob, jobParameters);
     }
 
-    @Scheduled(fixedDelay = 604800000)
+    @Scheduled(fixedDelay = 10800000)
     public void saveMovieRankRecentWeeklyJob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         List<MovieOpenApiHistory> movieOpenApiHistories = movieOpenApiHistoryRepository.findAll();
         if (movieOpenApiHistories == null) {

@@ -1,4 +1,4 @@
-package movierankchart.domain.movies.controller;
+package movierankchart.domain.movieopenapihistory.controller;
 
 import movierankchart.batch.scheduler.SaveMovieRankScheduler;
 import org.junit.jupiter.api.Test;
@@ -14,29 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @Transactional
+@SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser
-class MoviesControllerSuccessTest {
+class MovieOpenApiHistoryControllerSuccessTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
     private SaveMovieRankScheduler saveMovieRankScheduler;
 
     @Test
-    void 영화명으로_영화_조회_성공() throws Exception {
+    void 영화_순위_데이터_범위_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/movies").param("title", "").param("isConsiderSomeoneChatroom", "true"));
-
-        // then
-        resultActions.andExpect(status().isOk());
-    }
-
-    @Test
-    void 영화아이디로_영화_조회_성공() throws Exception {
-        // when
-        ResultActions resultActions = mvc.perform(get("/v1/movies").param("id", "3"));
+        ResultActions resultActions = mvc.perform(get("/v1/movie-open-api-history"));
 
         // then
         resultActions.andExpect(status().isOk());

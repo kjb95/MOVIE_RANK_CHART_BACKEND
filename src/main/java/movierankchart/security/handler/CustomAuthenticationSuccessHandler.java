@@ -6,7 +6,6 @@ import movierankchart.domain.users.costants.UsersErrorMessage;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
 import movierankchart.security.constants.TokenType;
-import movierankchart.security.constants.SecurityConstants;
 import movierankchart.security.service.RefreshTokenService;
 import movierankchart.security.service.TokenProviderService;
 import org.springframework.security.core.Authentication;
@@ -29,19 +28,19 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Users users = findUsers(authentication);
-        // 액세스 토큰, 리프레시 토큰 생성
-        String accessToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(TokenType.ACCESS_TOKEN.getSeconds()));
+        // 리프레시 토큰 생성, 저장, 쿠키에 담기
         String refreshToken = tokenProviderService.createToken(users.getEmail(), Duration.ofSeconds(TokenType.REFRESH_TOKEN.getSeconds()));
         refreshTokenService.saveToken(users, refreshToken);
-        // 응답쿠키에 액세스 토큰, 리프레시 토큰 담기
-        CookieUtils.addCookie(response, TokenType.ACCESS_TOKEN.getName(), accessToken);
-        CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.getName(), refreshToken);
-        CookieUtils.addCookie(response, TokenType.AUTHENTICATION_DONE.getName(), TokenType.AUTHENTICATION_DONE.getName(), TokenType.AUTHENTICATION_DONE.getSeconds());
+        CookieUtils.addCookie(response, TokenType.REFRESH_TOKEN.getName(), refreshToken, true);
+        // oauth2 인증 팝업창을 끄기 위한 쿠키 생성
+        CookieUtils.addCookie(response, TokenType.AUTHENTICATION_DONE.getName(), TokenType.AUTHENTICATION_DONE.getName(), false);
     }
 
     private Users findUsers(Authentication authentication) {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = (String) oAuth2User.getAttributes().get(SecurityConstants.OAUTH2_ATTRIBUTE_EMAIL);
-        return usersRepository.findUsersByEmail(email).orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_EMAIL));
+        String email = (String) oAuth2User.getAttributes()
+                .get("email");
+        return usersRepository.findUsersByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_EMAIL));
     }
 }

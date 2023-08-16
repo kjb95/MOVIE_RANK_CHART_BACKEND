@@ -39,7 +39,7 @@ class UsersControllerSuccessTest {
     @Test
     void 채팅방에_속한_유저_조회_성공() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/users").param("moviesId", "58480"));
+        ResultActions resultActions = mvc.perform(get("/v1/users/chatroom").param("moviesId", "58480"));
 
         // then
         resultActions.andExpect(status().isOk());
@@ -50,20 +50,16 @@ class UsersControllerSuccessTest {
         // given
         Users users = Users.createUsers("jinbkim@gmail.com", "kim", "https://lh3.googleusercontent.com/a/AAcHTteXwTOgeOZ7HmG4uvVjfngCXEDOcxPt6JiYq8PGFqVI=s96-c");
         usersRepository.save(users);
-        users = usersRepository.findUsersByEmail("jinbkim@gmail.com")
-                .get();
+        users = usersRepository.findUsersByEmail("jinbkim@gmail.com").get();
         Long usersId = users.getUsersId();
         UpdateUserChatRoomRequestDto requestBody = new UpdateUserChatRoomRequestDto(58480L);
 
         // when
-        ResultActions resultActions = mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)));
+        ResultActions resultActions = mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestBody)));
 
         // then
         resultActions.andExpect(status().isOk());
-        Assertions.assertThat(users.getMovies()
-                        .getMoviesId())
-                .isEqualTo(58480);
+        Assertions.assertThat(users.getMovies().getMoviesId()).isEqualTo(58480);
     }
 
     @Test
@@ -71,21 +67,17 @@ class UsersControllerSuccessTest {
         // given
         Users users = Users.createUsers("jinbkim@gmail.com", "kim", "https://lh3.googleusercontent.com/a/AAcHTteXwTOgeOZ7HmG4uvVjfngCXEDOcxPt6JiYq8PGFqVI=s96-c");
         usersRepository.save(users);
-        users = usersRepository.findUsersByEmail("jinbkim@gmail.com")
-                .get();
+        users = usersRepository.findUsersByEmail("jinbkim@gmail.com").get();
         Long usersId = users.getUsersId();
         UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(58480L);
-        mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateUserChatRoomRequestDto)));
+        mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(updateUserChatRoomRequestDto)));
         UpdateUserChatRoomRequestDto requestBody = new UpdateUserChatRoomRequestDto();
 
         // when
-        ResultActions resultActions = mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)));
+        ResultActions resultActions = mvc.perform(patch("/v1/users/" + usersId).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(requestBody)));
 
         // then
         resultActions.andExpect(status().isOk());
-        Assertions.assertThat(users.getMovies())
-                .isNull();
+        Assertions.assertThat(users.getMovies()).isNull();
     }
 }

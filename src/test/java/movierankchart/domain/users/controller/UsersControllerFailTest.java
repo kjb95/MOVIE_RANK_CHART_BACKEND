@@ -35,7 +35,7 @@ public class UsersControllerFailTest {
     @Test
     void 채팅방에_속한_유저_조회시_채팅방_아이디_파라미터가_존재하지_않는_예외() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/users"));
+        ResultActions resultActions = mvc.perform(get("/v1/users/chatroom"));
 
         // then
         resultActions.andExpect(status().isBadRequest());
@@ -44,7 +44,7 @@ public class UsersControllerFailTest {
     @Test
     void 채팅방에_속한_유저_조회시_존재하지_않는_채팅방_아이디_예외() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/users").param("moviesId", "999999"));
+        ResultActions resultActions = mvc.perform(get("/v1/users/chatroom").param("moviesId", "999999"));
 
         // then
         resultActions.andExpect(status().isNotFound());
@@ -53,7 +53,7 @@ public class UsersControllerFailTest {
     @Test
     void 채팅방에_속한_유저_조회시_유효하지_않은_채팅방_아이디_값_예외() throws Exception {
         // when
-        ResultActions resultActions = mvc.perform(get("/v1/users").param("moviesId", "abc"));
+        ResultActions resultActions = mvc.perform(get("/v1/users/chatroom").param("moviesId", "abc"));
 
         // then
         resultActions.andExpect(status().isBadRequest());
@@ -82,7 +82,7 @@ public class UsersControllerFailTest {
         UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto = new UpdateUserChatRoomRequestDto(999999L);
 
         // when
-        ResultActions resultActions = mvc.perform(patch("/v1/users/"+users.getUsersId()).contentType(MediaType.APPLICATION_JSON)
+        ResultActions resultActions = mvc.perform(patch("/v1/users/" + users.getUsersId()).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateUserChatRoomRequestDto)));
 
         // then

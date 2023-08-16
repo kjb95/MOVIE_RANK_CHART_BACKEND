@@ -7,8 +7,9 @@ import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
 import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
 import movierankchart.domain.users.dto.response.FindUsersResponseDto;
 import movierankchart.domain.users.service.UsersService;
-import movierankchart.security.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,6 @@ import javax.validation.Valid;
 @RequestMapping("/v1/users")
 public class UsersController {
     private final UsersService usersService;
-    private final AuthenticationService authenticationService;
 
     @Operation(summary = "채팅방에 속한 유저 조회")
     @GetMapping("/chatroom")
@@ -38,7 +38,11 @@ public class UsersController {
     @Operation(summary = "유저 조회")
     @GetMapping
     public ResponseEntity<FindUsersResponseDto> findUsers() {
-        UserDetails userDetails = authenticationService.findUserDetails();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.ok().build();
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         FindUsersResponseDto findUsersResponseDto = usersService.findUsers(userDetails.getUsername());
         return ResponseEntity.ok(findUsersResponseDto);
     }
