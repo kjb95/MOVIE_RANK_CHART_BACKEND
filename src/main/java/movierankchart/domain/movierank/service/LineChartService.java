@@ -2,10 +2,13 @@ package movierankchart.domain.movierank.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import movierankchart.common.utils.DateUtils;
 import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDto;
 import movierankchart.domain.movierank.dto.response.FindMovieRankLineChartResponseDtos;
 import movierankchart.domain.movierank.entity.MovieRank;
+import movierankchart.domain.movies.constants.MoviesErrorMessage;
+import movierankchart.domain.movies.repository.MoviesRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +20,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LineChartService {
+    private final MoviesRepository moviesRepository;
+
     @AllArgsConstructor
     @Getter
     public class LineChartData {
@@ -85,7 +91,7 @@ public class LineChartService {
     private List<FindMovieRankLineChartResponseDto> createFindMovieRankLineChartResponseDtos(List<MovieRank> movieRanks, LocalDate startDate, LocalDate endDate, Function<MovieRank, List<LineChartData>> createNewLineChartDataList) {
         return movieRanks.stream()
                 .collect(Collectors.toMap(movieRank -> movieRank.getMovies()
-                        .getTitle(), createNewLineChartDataList, this::addAllLineChartData))
+                        .getMoviesId(), createNewLineChartDataList, this::addAllLineChartData))
                 .entrySet()
                 .stream()
                 .map(movieTitleToLineChartDataEntry -> createFindMovieRankLineChartResponseDto(movieTitleToLineChartDataEntry, startDate, endDate))
@@ -97,12 +103,15 @@ public class LineChartService {
         return exist;
     }
 
-    private FindMovieRankLineChartResponseDto createFindMovieRankLineChartResponseDto(Map.Entry<String, List<LineChartData>> movieTitleToLineChartDataEntry, LocalDate startDate, LocalDate endDate) {
-        String movieTitle = movieTitleToLineChartDataEntry.getKey();
+    private FindMovieRankLineChartResponseDto createFindMovieRankLineChartResponseDto(Map.Entry<Long, List<LineChartData>> movieTitleToLineChartDataEntry, LocalDate startDate, LocalDate endDate) {
+        Long moviesId = movieTitleToLineChartDataEntry.getKey();
+        String movieTitle = moviesRepository.findById(moviesId)
+                .orElseThrow(() -> new IllegalArgumentException(MoviesErrorMessage.NOT_FOUND_MOVIES))
+                .getTitle();
         long[] datas = new long[(int) (ChronoUnit.DAYS.between(startDate, endDate) + 1)];
         movieTitleToLineChartDataEntry.getValue()
                 .forEach(lineChartData -> fillDataArray(datas, lineChartData, startDate));
-        return new FindMovieRankLineChartResponseDto(movieTitle, datas);
+        return new FindMovieRankLineChartResponseDto(moviesId, movieTitle, datas);
     }
 
     private void fillDataArray(long[] datas, LineChartData lineChartData, LocalDate startDate) {

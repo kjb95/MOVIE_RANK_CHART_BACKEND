@@ -2,12 +2,14 @@ package movierankchart.domain.movierank.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class FindMovieRankLineChartResponseDtos {
     private LocalDate[] dates;
     private List<FindMovieRankLineChartResponseDto> rank;

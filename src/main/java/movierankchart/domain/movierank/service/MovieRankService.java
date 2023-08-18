@@ -117,7 +117,7 @@ public class MovieRankService {
     public FindMovieRankLineChartResponseDtos findMovieRankLineChartByMoviesId(long moviesId) {
         List<MovieRank> movieRanks = movieRankRepository.findMovieRankByMoviesId(moviesId);
         if (movieRanks.size() == 0) {
-            throw new NoSuchElementException(MovieRankErrorMessage.INVALID_MOVIES_ID);
+            return new FindMovieRankLineChartResponseDtos();
         }
         LocalDate startDate = movieRanks.get(0)
                 .getMovieRankId()
