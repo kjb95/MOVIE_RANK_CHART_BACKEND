@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FindMovieRankPieChartResponseDto {
-    private String movieTitle;
+    private Long id;
+    private String name;
     private Long value;
 }
