@@ -5,19 +5,16 @@ import movierankchart.domain.movies.constants.MoviesErrorMessage;
 import movierankchart.domain.movies.entity.Movies;
 import movierankchart.domain.movies.repository.MoviesRepository;
 import movierankchart.domain.users.costants.UsersErrorMessage;
-import movierankchart.domain.users.dto.request.FindUsersInChatRoomRequestDto;
 import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
-import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDto;
-import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDtos;
 import movierankchart.domain.users.dto.response.FindUsersResponseDto;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -26,28 +23,15 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final MoviesRepository moviesRepository;
 
-    public FindUsersInChatRoomResponseDtos findUsersInChatRoom(FindUsersInChatRoomRequestDto findUsersInChatRoomRequestDto) {
-        Long moviesId = findUsersInChatRoomRequestDto.getMoviesId();
-        boolean isExistMovie = moviesRepository.existsById(moviesId);
-        if (!isExistMovie) {
-            throw new NoSuchElementException(MoviesErrorMessage.NOT_FOUND_MOVIES);
-        }
-        List<Users> users = usersRepository.findUsersByMovies_MoviesId(moviesId);
-        List<FindUsersInChatRoomResponseDto> findUsersInChatRoomResponseDtos = users.stream()
-                .map(Users::toFindUsersInChatRoomResponseDto)
-                .collect(Collectors.toList());
-        return new FindUsersInChatRoomResponseDtos(findUsersInChatRoomResponseDtos);
-    }
-
     @Transactional
     public void updateUserChatRoom(long usersId, UpdateUserChatRoomRequestDto updateUserChatRoomRequestDto) {
         Users users = usersRepository.findById(usersId)
                 .orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_ID));
-        if (updateUserChatRoomRequestDto.getMoviesId() == null) {
+        if (updateUserChatRoomRequestDto.getChatRoomId() == null) {
             users.setMovies(null);
             return;
         }
-        Movies movies = moviesRepository.findById(updateUserChatRoomRequestDto.getMoviesId())
+        Movies movies = moviesRepository.findById(updateUserChatRoomRequestDto.getChatRoomId())
                 .orElseThrow(() -> new NoSuchElementException(MoviesErrorMessage.NOT_FOUND_MOVIES));
         users.setMovies(movies);
     }
@@ -55,5 +39,12 @@ public class UsersService {
     public FindUsersResponseDto findUsers(String email) {
         Users users = usersRepository.findUsersByEmail(email).orElseThrow(() -> new NoSuchElementException(UsersErrorMessage.NOT_FOUND_USER_EMAIL));
         return users.toFindUsersResponseDto();
+    }
+
+    public Users findUsers(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        return usersRepository.findUsersByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(UsersErrorMessage.NOT_FOUND_USER_EMAIL));
     }
 }

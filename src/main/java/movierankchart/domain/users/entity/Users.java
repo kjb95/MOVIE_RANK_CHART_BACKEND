@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import movierankchart.common.entity.AuditEntity;
 import movierankchart.domain.movies.entity.Movies;
-import movierankchart.domain.users.dto.response.FindUsersInChatRoomResponseDto;
 import movierankchart.domain.users.dto.response.FindUsersResponseDto;
+import movierankchart.websocket.dto.response.SubscribedUserResponseDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -38,16 +38,31 @@ public class Users extends AuditEntity implements UserDetails {
         return users;
     }
 
-    public FindUsersInChatRoomResponseDto toFindUsersInChatRoomResponseDto() {
-        return new FindUsersInChatRoomResponseDto(usersId, email);
-    }
-
     public FindUsersResponseDto toFindUsersResponseDto() {
         return new FindUsersResponseDto(usersId, email, name, picture);
     }
 
     public void setMovies(Movies movies) {
         this.movies = movies;
+    }
+
+    public SubscribedUserResponseDto toSubscribedUserResponseDto() {
+        return new SubscribedUserResponseDto(usersId, picture, name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Users)) {
+            return false;
+        }
+        return usersId.equals(((Users) o).usersId);
+    }
+    @Override
+    public int hashCode() {
+        return Long.hashCode(usersId);
     }
 
     @Override

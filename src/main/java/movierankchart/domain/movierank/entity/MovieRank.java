@@ -40,6 +40,9 @@ public class MovieRank extends AuditEntity {
     }
 
     public FindMovieRankTopTenResponseDto toFindMovieRankTopTenResponseDto() {
+        if (movies == null) {
+            return new FindMovieRankTopTenResponseDto(null,movieRankStatistics.isNewRank(), movieRankId.getRank(), movieRankStatistics.getRankIncrement(), movieRankStatistics.getAudienceCount(), null, null, null);
+        }
         return new FindMovieRankTopTenResponseDto(movies.getMoviesId(),movieRankStatistics.isNewRank(), movieRankId.getRank(), movieRankStatistics.getRankIncrement(), movieRankStatistics.getAudienceCount(), movies.getTitle(), movies.getPoster(), movies.getOpeningDate());
     }
 }

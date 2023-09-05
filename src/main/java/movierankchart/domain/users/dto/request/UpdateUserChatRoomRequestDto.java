@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserChatRoomRequestDto {
-    private Long moviesId;
+    private Long chatRoomId;
 }

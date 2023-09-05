@@ -2,7 +2,6 @@ package movierankchart.domain.users.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import movierankchart.batch.scheduler.SaveMovieRankScheduler;
-import movierankchart.domain.movies.repository.MoviesRepository;
 import movierankchart.domain.users.dto.request.UpdateUserChatRoomRequestDto;
 import movierankchart.domain.users.entity.Users;
 import movierankchart.domain.users.repository.UsersRepository;
@@ -18,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -33,17 +32,6 @@ class UsersControllerSuccessTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private UsersRepository usersRepository;
-    @Autowired
-    private MoviesRepository moviesRepository;
-
-    @Test
-    void 채팅방에_속한_유저_조회_성공() throws Exception {
-        // when
-        ResultActions resultActions = mvc.perform(get("/v1/users/chatroom").param("moviesId", "58480"));
-
-        // then
-        resultActions.andExpect(status().isOk());
-    }
 
     @Test
     void 유저의_채팅방_입장_성공() throws Exception {

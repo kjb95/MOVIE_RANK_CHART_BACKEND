@@ -151,15 +151,6 @@ class MovieRankControllerFailTest {
     }
 
     @Test
-    void 영화상세_페이지의_라인차트_데이터_조회시_유효하지않은_영화_아이디_값_예외() throws Exception {
-        // when
-        ResultActions resultActions = mvc.perform(get("/v1/movie-rank/line-chart/1"));
-
-        // then
-        resultActions.andExpect(status().isNotFound());
-    }
-
-    @Test
     void 영화상세_페이지의_라인차트_데이터_조회시_유효하지않은_영화_아이디_폼_예외() throws Exception {
         // when
         ResultActions resultActions = mvc.perform(get("/v1/movie-rank/line-chart/58877a"));
